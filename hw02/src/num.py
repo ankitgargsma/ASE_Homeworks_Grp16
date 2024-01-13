@@ -13,7 +13,10 @@ class NUM:
         self.m2 = 0
         self.hi = float('-inf')
         self.lo = float('inf')
-        #self.heaven = ##TODO
+        if s[-1] == '-':
+            self.heaven = 0
+        else:
+            self.heaven = 1
 
     def add(self, x, d):
         if(x != "?"):
