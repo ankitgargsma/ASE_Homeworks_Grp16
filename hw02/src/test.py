@@ -1,4 +1,8 @@
 from num import NUM
+from sym import SYM
+from utils import *
+import math
+
 class Tests:
     def __init__(self):
         self.run_tests()
@@ -8,6 +12,7 @@ class Tests:
         self.test_num_add_method()
         self.test_num_mid_method()
         self.test_num_div_method()
+        self.test_sym()
         print("PASS")
 
     ## Helper function
@@ -59,4 +64,10 @@ class Tests:
 
         self.num_instance.add(20, 3)
         self.assert_equal(round(self.num_instance.div(), 3), 7.071)
+
+    def test_sym(self):
+        sym = SYM()
+        for x in ["a","a","a","a","b","b","c"]:
+            sym.add(x)
+        return "a" == sym.mid() and 1.379 == rnd(sym.div())
 Tests()
