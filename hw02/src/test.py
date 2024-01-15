@@ -15,6 +15,7 @@ class Tests:
         self.test_num_div_method()
         self.test_num_norm_method()
         self.test_sym()
+        self.test_data_initialization_from_file()
         self.test_data_initialization_from_dict()
         print("PASS")
 
@@ -81,7 +82,7 @@ class Tests:
     def test_data_initialization_from_file(self):
         self.saved_stdout = sys.stdout
         sys.stdout = StringIO()
-        data_instance = DATA("../data/auto93.csv", None)
+        data_instance = DATA("hw02/src/data/auto93.csv", None)
         self.assertEqual(len(data_instance.rows), 399)
     
     def test_data_initialization_from_dict(self):
