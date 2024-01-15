@@ -5,8 +5,6 @@ from data import DATA
 from utils import *
 import math
 class Tests:
-    def __init__(self):
-        self.run_tests()
     
     def run_tests(self):
         self.test_num_initialization()
@@ -83,7 +81,7 @@ class Tests:
     def test_data_initialization_from_file(self):
         self.saved_stdout = sys.stdout
         sys.stdout = StringIO()
-        data_instance = DATA("hw02/src/data/auto93.csv", None)
+        data_instance = DATA("./data/auto93.csv", None)
         self.assertEqual(len(data_instance.rows), 399)
     
     def test_data_initialization_from_dict(self):
@@ -105,4 +103,3 @@ class Tests:
         result = data_instance.stats(cols, None, ndivs, u)
         print(result)
         self.assertEqual(result[".N"], len(data_instance.rows))
-Tests()
