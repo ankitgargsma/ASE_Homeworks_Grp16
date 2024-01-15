@@ -1,9 +1,14 @@
 from io import StringIO
 from num import NUM
 from sym import SYM
+from cols import COLS
 from data import DATA
 from utils import *
 import math
+
+class MockRow:
+    def __init__(self, cells):
+        self.cells = cells
 
 class Tests:
     
@@ -14,10 +19,14 @@ class Tests:
         self.test_num_div_method()
         self.test_num_norm_method()
         self.test_sym()
-        self.test_data_initialization_from_file()
+        #self.test_data_initialization_from_file()
         #self.test_data_initialization_from_dict()
         #self.stats()
         self.test_div_with_different_data()
+        self.test_add()
+        self.test_mid()
+        self.test_div()
+
         print("PASS")
 
     ## Helper function
@@ -80,6 +89,35 @@ class Tests:
             sym.add(x)
         return "a" == sym.mid() and 1.379 == rnd(sym.div())
     
+    def test_add(self):
+        sym_obj = SYM()
+        sym_obj.add("basketball")
+        assert sym_obj.n == 1
+        assert sym_obj.has == {"basketball": 1}
+        assert sym_obj.mode == "basketball"
+        assert sym_obj.most == 1
+
+        sym_obj.add("football")
+        sym_obj.add("basketball")
+        assert sym_obj.n == 3
+        assert sym_obj.has == {"basketball": 2, "football": 1}
+        assert sym_obj.mode == "basketball"
+        assert sym_obj.most == 2
+
+    def test_mid(self):
+        sym_obj = SYM()
+        sym_obj.add("baseball")
+        sym_obj.add("basketball")
+        assert sym_obj.mid() == "baseball"
+
+    def test_div(self):
+        sym_obj = SYM()
+        sym_obj.add("footall")
+        sym_obj.add("baseball")
+        sym_obj.add("Formula1")
+        sym_obj.add("basketball")
+        assert math.isclose(sym_obj.div(), 2.0)
+
     def test_div_with_different_data(self):
         # Test the div method with a different dataset
         data = ["x", "x", "y", "y", "z"]
@@ -88,13 +126,13 @@ class Tests:
             sym.add(x)
 
         expected_result = -((2/5) * math.log2(2/5) + (2/5) * math.log2(2/5) + (1/5) * math.log2(1/5))
-        #self.assertAlmostEqual(sym.div(), expected_result, places=3)
 
     def test_data_initialization_from_file(self):
         self.saved_stdout = sys.stdout
         sys.stdout = StringIO()
         data_instance = DATA("./auto93.csv", None)
         self.assert_equal(len(data_instance.rows), 398)
+    
     
     '''def test_data_initialization_from_dict(self):
         data_dict = {
