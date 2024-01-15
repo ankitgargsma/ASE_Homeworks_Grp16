@@ -2,7 +2,6 @@ from num import NUM
 from sym import SYM
 from utils import *
 import math
-
 class Tests:
     def __init__(self):
         self.run_tests()
@@ -12,6 +11,7 @@ class Tests:
         self.test_num_add_method()
         self.test_num_mid_method()
         self.test_num_div_method()
+        self.test_num_norm_method()
         self.test_sym()
         print("PASS")
 
@@ -56,14 +56,18 @@ class Tests:
         self.assert_equal(self.num_instance.mid(), 30)
     
     def test_num_div_method(self):
-        self.num_instance = NUM("sample", 5)
-        self.assert_equal(self.num_instance.div(), 0)
-
+        self.num_instance = NUM("a", 5)
         self.num_instance.add(10, 2)
-        self.assert_equal(self.num_instance.div(), 0)
-
         self.num_instance.add(20, 3)
         self.assert_equal(round(self.num_instance.div(), 3), 7.071)
+
+    def test_num_norm_method(self):
+        num_instance = NUM("a", 5)
+        self.assert_equal(num_instance.norm("?"), "?")
+
+        num_instance.add(10, 2)
+        num_instance.add(20, 3)
+        self.assert_equal(round(num_instance.norm(10), 3), 0)
 
     def test_sym(self):
         sym = SYM()

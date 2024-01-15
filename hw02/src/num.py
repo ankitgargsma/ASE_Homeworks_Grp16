@@ -37,5 +37,8 @@ class NUM:
             return 0
         return (self.m2/(self.n - 1))**.5
     
+    #Normalization based on low and high values
     def norm(self,x):
-        return x == "?" and x or (x - self.lo)/(self.hi - self.lo + float("-inf"))
+        if x == "?":
+            return x
+        return (x - self.lo)/(self.hi - self.lo + float("-inf"))
