@@ -1,5 +1,7 @@
+from io import StringIO
 from num import NUM
 from sym import SYM
+from data import DATA
 from utils import *
 import math
 class Tests:
@@ -13,6 +15,7 @@ class Tests:
         self.test_num_div_method()
         self.test_num_norm_method()
         self.test_sym()
+        self.test_data_initialization_from_dict()
         print("PASS")
 
     ## Helper function
@@ -74,4 +77,18 @@ class Tests:
         for x in ["a","a","a","a","b","b","c"]:
             sym.add(x)
         return "a" == sym.mid() and 1.379 == rnd(sym.div())
+    
+    def test_data_initialization_from_file(self):
+        self.saved_stdout = sys.stdout
+        sys.stdout = StringIO()
+        data_instance = DATA("./auto93.csv", None)
+        self.assertEqual(len(data_instance.rows), 399)
+    
+    def test_data_initialization_from_dict(self):
+        data_dict = {
+            "row1": [1, 2, 3],
+            "row2": [4, 5, 6],
+        }
+        data_instance = DATA(data_dict, None)
+        self.assertEqual(len(data_instance.rows), len(data_dict))
 Tests()

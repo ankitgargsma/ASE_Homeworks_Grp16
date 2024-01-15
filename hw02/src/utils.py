@@ -10,3 +10,12 @@ def rand(lo, hi):
 def rnd(n, nPlaces = 3):
     mult = 10**nPlaces
     return math.floor(n * mult + 0.5) / mult
+
+
+def l_rnd(n, ndecs):
+        if not isinstance(n, (int, float)):
+            return n
+        if math.floor(n) == n:
+            return n
+        mult = 10**(ndecs or 2)
+        return math.floor(n * mult + 0.5) / mult

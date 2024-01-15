@@ -2,6 +2,7 @@ import io
 import math
 from row import ROW
 from cols import COLS
+from utils import l_rnd
 
 class DATA:
     ##fun unused so far
@@ -13,43 +14,36 @@ class DATA:
             with io.open(src, 'r') as file:
                 for line in file:
                     row_values = line.strip().split(',')
-                    self.add(row_values, fun)
+                    self.add(self,row_values, fun)
             return
         else:
             for _, x in src.items() if src else {}:
-                self.add(x, fun)
+                self.add(self, x, fun)
 
     def stats(self, cols, fun, ndivs, u):
         u = {".N": len(self.rows)}
 
         for col in (self.cols[cols] if cols else self.cols["y"]):
             stat_value = type(col).__dict__.get(fun, type(col).mid)(col)
-            rounded_stat = self.l_rnd(stat_value, ndivs)
+            rounded_stat = l_rnd(stat_value, ndivs)
             u[col.txt] = rounded_stat
 
         return u
     
-    @staticmethod
-    def l_rnd(n, ndecs):
-        if not isinstance(n, (int, float)):
-            return n
-        if math.floor(n) == n:
-            return n
-        mult = 10**(ndecs or 2)
-        return math.floor(n * mult + 0.5) / mult
 
-    def add(self, t, fun, row):
+
+    def add(self, t, fun):
         if(hasattr(t, 'cells')):
             row = t.cells
         else:
-            ROW.new(t)
+            row = ROW(t)
         if(self.cols):
             if(fun):
                 fun(self,row)
             else:
                 self.rows.append(self.cols.add(row))
         else:
-            self.cols = COLS.new(row)
+            self.cols = COLS(row)
         
 
     def mid(self, cols, u):
@@ -60,7 +54,7 @@ class DATA:
         else:
             for col in self.cols.all:
                 u.append(col.mid())
-        return ROW.new(u)
+        return ROW(u)
 
         
     
@@ -72,5 +66,5 @@ class DATA:
         else:
             for col in self.cols.all:
                 u.append(col.div())
-        return ROW.new(u)
+        return ROW(u)
     
