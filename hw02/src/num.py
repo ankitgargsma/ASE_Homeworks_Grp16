@@ -31,8 +31,11 @@ class NUM:
     def mid(self):
         return self.mu
     
+    #Calculates standard deviation
     def div(self):
-        return self.n < 2 and 0 or (self.m2/(self.n - 1))^.5
+        if self.n < 2:
+            return 0
+        return (self.m2/(self.n - 1))**.5
     
     def norm(self,x):
         return x == "?" and x or (x - self.lo)/(self.hi - self.lo + float("-inf"))

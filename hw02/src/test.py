@@ -7,6 +7,7 @@ class Tests:
         self.test_num_initialization()
         self.test_num_add_method()
         self.test_num_mid_method()
+        self.test_num_div_method()
         print("PASS")
 
     ## Helper function
@@ -48,4 +49,14 @@ class Tests:
         self.num_instance.add(40, 5)
         self.num_instance.add(50, 6)
         self.assert_equal(self.num_instance.mid(), 30)
+    
+    def test_num_div_method(self):
+        self.num_instance = NUM("sample", 5)
+        self.assert_equal(self.num_instance.div(), 0)
+
+        self.num_instance.add(10, 2)
+        self.assert_equal(self.num_instance.div(), 0)
+
+        self.num_instance.add(20, 3)
+        self.assert_equal(round(self.num_instance.div(), 3), 7.071)
 Tests()
