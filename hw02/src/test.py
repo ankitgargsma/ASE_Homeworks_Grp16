@@ -98,7 +98,7 @@ class Tests:
         self.saved_stdout = sys.stdout
         sys.stdout = StringIO()
         data_instance = DATA(file, None)
-        cols = ["col1", "col2", "col3"]
+        cols = None
         ndivs = 2
         u = {}
 
