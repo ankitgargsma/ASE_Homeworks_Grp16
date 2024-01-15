@@ -114,3 +114,5 @@ class Tests:
         result = data_instance.stats(cols, None, ndivs, u)
         print(result)
         self.assertEqual(result[".N"], len(data_instance.rows))
+
+Tests().run_tests()
