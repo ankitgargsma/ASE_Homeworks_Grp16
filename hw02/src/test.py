@@ -19,6 +19,7 @@ class Tests:
         self.test_num_div_method()
         self.test_num_norm_method()
         self.test_sym()
+        self.test_data()
         #self.test_data_initialization_from_file()
         #self.test_data_initialization_from_dict()
         #self.stats()
@@ -26,7 +27,6 @@ class Tests:
         self.test_add()
         self.test_mid()
         self.test_div()
-
         print("PASS")
 
     ## Helper function
@@ -133,6 +133,9 @@ class Tests:
         data_instance = DATA("./auto93.csv", None)
         self.assert_equal(len(data_instance.rows), 398)
     
+    def test_data(self):
+        data = DATA("./auto93.csv")
+        return len(data.rows) == 398 and data.cols.y[0].w == -1 and data.cols.x[1].at == 1 and len(data.cols.x) == 4
     
     '''def test_data_initialization_from_dict(self):
         data_dict = {

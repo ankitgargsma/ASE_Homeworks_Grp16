@@ -18,7 +18,8 @@ class NUM:
             self.heaven = 0
         else:
             self.heaven = 1
-
+        
+        self.w = -1 if "-" in self.txt else 1
     def add(self, x):
         if(x != "?"):
             self.n = self.n + 1
