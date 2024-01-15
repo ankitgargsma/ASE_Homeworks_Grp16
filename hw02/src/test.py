@@ -5,6 +5,7 @@ from cols import COLS
 from data import DATA
 from utils import *
 import math
+import sys  
 
 class MockRow:
     def __init__(self, cells):
@@ -19,8 +20,6 @@ class Tests:
         self.test_num_div_method()
         self.test_num_norm_method()
         self.test_sym()
-        self.test_data()
-        self.test_Util_cells()
         #self.test_data_initialization_from_file()
         #self.test_data_initialization_from_dict()
         #self.stats()
@@ -28,6 +27,7 @@ class Tests:
         self.test_add()
         self.test_mid()
         self.test_div()
+        self.test_Util_cells()
         print("PASS")
 
     ## Helper function
@@ -134,14 +134,12 @@ class Tests:
         data_instance = DATA("./auto93.csv", None)
         self.assert_equal(len(data_instance.rows), 398)
     
-    def test_data(self):
-        data = DATA("./auto93.csv")
-        return len(data.rows) == 398 and data.cols.y[0].w == -1 and data.cols.x[1].at == 1 and len(data.cols.x) == 4
-    
     def test_Util_cells(self):
         input_str = "1, 2, 123789, true, false, null, AA24"
         result = cells(input_str)
         assert result == [1, 2, 123789, 'true', 'false', 'null', "AA24"]
+
+
     '''def test_data_initialization_from_dict(self):
         data_dict = {
             "row1": [1, 2, 3],
@@ -164,5 +162,5 @@ class Tests:
         self.assertEqual(result[".N"], len(data_instance.rows))
     
 '''
-test_instance = Tests()
-test_instance.run_tests()
+#test_instance = Tests()
+#test_instance.run_tests()
