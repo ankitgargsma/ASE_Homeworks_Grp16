@@ -17,6 +17,7 @@ class Tests:
         self.test_sym()
         self.test_data_initialization_from_file()
         self.test_data_initialization_from_dict()
+        self.stats()
         print("PASS")
 
     ## Helper function
@@ -92,4 +93,16 @@ class Tests:
         }
         data_instance = DATA(data_dict, None)
         self.assertEqual(len(data_instance.rows), len(data_dict))
+
+    def stats(self, file):
+        self.saved_stdout = sys.stdout
+        sys.stdout = StringIO()
+        data_instance = DATA(file, None)
+        cols = ["col1", "col2", "col3"]
+        ndivs = 2
+        u = {}
+
+        result = data_instance.stats(cols, None, ndivs, u)
+        print(result)
+        self.assertEqual(result[".N"], len(data_instance.rows))
 Tests()
