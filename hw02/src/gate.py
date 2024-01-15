@@ -1,7 +1,7 @@
 from utils import *
 from data import DATA
 from num import NUM
-#from test import Tests
+from test import Tests
 from sym import SYM
 import sys
 
@@ -10,7 +10,7 @@ class gate:
         if testFlag == "stats":
             data = DATA(fileFlag)
             self.stats(data)
-            #Tests().run_tests()
+            Tests().run_tests()
 
     def stats(self, data):
         for col in data.cols.all:

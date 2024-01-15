@@ -20,6 +20,7 @@ class Tests:
         self.test_num_norm_method()
         self.test_sym()
         self.test_data()
+        self.test_Util_cells()
         #self.test_data_initialization_from_file()
         #self.test_data_initialization_from_dict()
         #self.stats()
@@ -137,6 +138,10 @@ class Tests:
         data = DATA("./auto93.csv")
         return len(data.rows) == 398 and data.cols.y[0].w == -1 and data.cols.x[1].at == 1 and len(data.cols.x) == 4
     
+    def test_Util_cells(self):
+        input_str = "1, 2, 123789, true, false, null, AA24"
+        result = cells(input_str)
+        assert result == [1, 2, 123789, 'true', 'false', 'null', "AA24"]
     '''def test_data_initialization_from_dict(self):
         data_dict = {
             "row1": [1, 2, 3],
