@@ -1,6 +1,7 @@
 import io
 import math
-
+from row import ROW
+from cols import COLS
 
 class DATA:
     ##fun unused so far
