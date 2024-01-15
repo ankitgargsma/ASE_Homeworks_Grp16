@@ -18,6 +18,7 @@ class Tests:
         self.test_data_initialization_from_file()
         self.test_data_initialization_from_dict()
         self.stats()
+        self.test_div_with_different_data()
         print("PASS")
 
     ## Helper function
@@ -80,6 +81,16 @@ class Tests:
             sym.add(x)
         return "a" == sym.mid() and 1.379 == rnd(sym.div())
     
+    def test_div_with_different_data(self):
+        # Test the div method with a different dataset
+        data = ["x", "x", "y", "y", "z"]
+        for x in data:
+            self.sym.add(x)
+
+        # Assert that the div method returns the correct value for this dataset
+        expected_result = -((2/5) * math.log2(2/5) + (2/5) * math.log2(2/5) + (1/5) * math.log2(1/5))
+        self.assertAlmostEqual(self.sym.div(), expected_result, places=3)
+
     def test_data_initialization_from_file(self):
         self.saved_stdout = sys.stdout
         sys.stdout = StringIO()
