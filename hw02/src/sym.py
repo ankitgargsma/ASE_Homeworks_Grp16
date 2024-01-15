@@ -1,7 +1,9 @@
 import math
 
 class SYM:
-    def __init__(self):
+    def __init__(self, s=" ", n=0):
+        self.txt = s
+        self.at = n
         self.n = 0
         self.has = {}
         self.most = 0

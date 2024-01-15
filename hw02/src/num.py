@@ -8,6 +8,7 @@ class NUM:
             self.at = 0
         else:
             self.at = n
+        self.txt = s
         self.n = 0
         self.mu = 0
         self.m2 = 0
@@ -18,7 +19,7 @@ class NUM:
         else:
             self.heaven = 1
 
-    def add(self, x, d):
+    def add(self, x):
         if(x != "?"):
             self.n = self.n + 1
             d = x - self.mu
