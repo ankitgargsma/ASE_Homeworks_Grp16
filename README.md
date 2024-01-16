@@ -3,7 +3,7 @@
 
 # About
 Homework repository for **CSC 591 021 Group-16**<br/>
-- HW1 - Conversion of <a href="https://github.com/timm/tested/blob/main/src/script.lua](https://github.com/timm/lo/blob/main/docs/gatecode.pdf">script.lua</a> to Python, including the test cases.
+- HW1 - Conversion of <a href="https://github.com/timm/lo/blob/main/docs/gatecode.pdf">script.lua</a> to Python, including the test cases.
   
 # Steps to run
 - HW 1:
