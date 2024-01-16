@@ -10,7 +10,18 @@ class gate:
         if testFlag == "stats":
             data = DATA(fileFlag)
             print(data.stats())
-            Tests().run_tests()   
+        elif testFlag == "all":
+            Tests().run_tests()
+        else:
+            self.run_specific_test(testFlag)  
+
+    def run_specific_test(self, test_name):
+        test_method = getattr(Tests(), f'{test_name}', None)
+        if test_method:
+            test_method()
+            print("PASS")
+        else:
+            print(f"Unknown test: {test_name}")
 
 if __name__ == "__main__":
     fileFlag, testFlag = None, None
