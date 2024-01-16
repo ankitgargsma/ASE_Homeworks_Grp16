@@ -9,28 +9,8 @@ class gate:
     def run(self, fileFlag, testFlag):
         if testFlag == "stats":
             data = DATA(fileFlag)
-            self.stats(data)
-        elif testFlag == "all":
-            Tests().run_tests()
-        else:
-            self.run_specific_test(testFlag)
-
-    def stats(self, data):
-        for col in data.cols.all:
-            if isinstance(col, NUM):
-                mean = col.mid()
-                print(f"Mean for numerical class '{col.txt}': {mean}")
-            elif isinstance(col, SYM):
-                mode = col.mid()
-                print(f"Mode for symbolic class '{col.txt}': {mode}")
-
-    def run_specific_test(self, test_name):
-        test_method = getattr(Tests(), f'{test_name}', None)
-        if test_method:
-            test_method()
-            print("PASS")
-        else:
-            print(f"Unknown test: {test_name}")
+            print(data.stats())
+            Tests().run_tests()   
 
 if __name__ == "__main__":
     fileFlag, testFlag = None, None

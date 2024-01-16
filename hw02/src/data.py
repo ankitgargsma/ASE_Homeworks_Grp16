@@ -1,5 +1,7 @@
 from row import ROW
 from cols import COLS
+from sym import SYM
+from num import NUM
 from utils import *;
 
 class DATA:
@@ -25,3 +27,17 @@ class DATA:
     def mid(self, cols=None):
         u = [col.mid() for col in (cols or self.cols.all)]
         return ROW.new(u)
+    
+    def stats(data):
+        Stats = {}
+        row_count = max(col.n for col in data.cols.all)
+        Stats[".N"] = row_count
+        for col in data.cols.all:
+            if isinstance(col, NUM):
+                mean = col.mid()
+                Stats[f"{col.txt}"] = round(mean, 2)
+            elif isinstance(col, SYM):
+                mode = col.mid()
+                Stats[f"{col.txt}"] = mode
+
+        return Stats
