@@ -1,6 +1,9 @@
 import sys, re, math, ast
 from pathlib import Path
 
+THE_M = 2
+THE_K = 1
+
 def rand(lo, hi):
     lo, hi = lo or 0, hi or 1
     global Seed

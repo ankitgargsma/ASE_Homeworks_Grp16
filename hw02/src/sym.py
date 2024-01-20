@@ -1,4 +1,5 @@
 import math
+import utils
 
 class SYM:
     def __init__(self, s=" ", n=0):
@@ -26,3 +27,6 @@ class SYM:
         for _, n in self.has.items():
             e = e + fun(n/self.n)
         return -e
+
+    def like(self, x, prior):
+        return ((self.has.get(x, 0) or 0) + utils.THE_M * prior) / (self.n + utils.THE_M)
