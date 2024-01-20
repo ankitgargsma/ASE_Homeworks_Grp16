@@ -16,3 +16,19 @@ class ROW:
                 out += math.log(inc)
 
         return math.exp(out)
+    
+    def likes(self, datas):
+        n, nHypotheses = 0, 0
+
+        for data in datas:
+            n += len(data.rows)
+            nHypotheses += 1
+
+        most, out = None, None
+
+        for k, data in enumerate(datas):
+            tmp = self.like(data, n, nHypotheses)
+            if most is None or tmp > most:
+                most, out = tmp, k
+
+        return out, most
