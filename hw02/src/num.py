@@ -1,3 +1,5 @@
+import math
+
 class NUM:
     def __init__(self, s, n):
         if( s is None):
