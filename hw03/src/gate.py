@@ -4,12 +4,15 @@ from num import NUM
 from test import Tests
 from sym import SYM
 import sys
+from collections import defaultdict
 
 class gate:
     def run(self, fileFlag, testFlag):
         if testFlag == "stats":
             data = DATA(fileFlag)
             print(data.stats())
+        elif testFlag == "csv_ascii":
+            self.process_csv(fileFlag)
         elif testFlag == "all":
             Tests().run_tests()
         else:
@@ -39,6 +42,33 @@ class gate:
             accuracy = wme['acc'] / wme['tries']
             print(accuracy)
             return accuracy
+    
+
+    def process_csv(self, file_path):
+        class_counts = defaultdict(int)
+        total_rows = 0
+
+        try:
+            for line_num, data_row in csv(file_path):
+                class_label = data_row[-1] 
+                if class_label.lower() == "class!":
+                    continue
+                total_rows += 1
+                class_counts[class_label] += 1
+
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+
+        # Print the results in an ASCII table
+        print("Class | Count | Percentage")
+        print("-" * 29)
+
+        for class_label, count in class_counts.items():
+            percentage = (count / total_rows) * 100
+            print(f"{class_label.ljust(6)}| {str(count).rjust(5)} | {percentage:.2f}%")
+
+        print("-" * 29)
+        print(f"Total | {total_rows} | 100.00%")
 
 if __name__ == "__main__":
     fileFlag, testFlag = None, None
