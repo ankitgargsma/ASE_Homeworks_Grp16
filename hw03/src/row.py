@@ -1,12 +1,13 @@
 import math
 import utils
+from config import *
 
 class ROW:
     def __init__(self, t):
         self.cells = t
 
-    def like(self, data, n, nHypotheses):
-        prior = (len(data.rows) + utils.THE_K) / (n + utils.THE_K * nHypotheses)
+    def like(self, data, n, n_hypotheses):
+        prior = (len(data.rows) + the['k']) / (n + the['k'] * n_hypotheses)
         out = math.log(prior)
         
         for col in data.cols.x:
@@ -17,7 +18,7 @@ class ROW:
 
         return math.exp(out)
     
-    def likes(self, datas):
+    '''def likes(self, datas):
         n, nHypotheses = 0, 0
 
         for data in datas:
@@ -28,6 +29,22 @@ class ROW:
 
         for k, data in enumerate(datas):
             tmp = self.like(data, n, nHypotheses)
+            if most is None or tmp > most:
+                most, out = tmp, k
+
+        return out, most'''
+    
+    def likes(self, datas):
+        n, n_hypotheses = 0, 0
+
+        for k, data in datas.items():
+            n += len(data.rows)
+            n_hypotheses += 1
+        
+        most, out = None, None
+
+        for k, data in datas.items():
+            tmp = self.like(data, n, n_hypotheses)
             if most is None or tmp > most:
                 most, out = tmp, k
 

@@ -47,7 +47,7 @@ class NUM:
             return x
         return (x - self.lo)/(self.hi - self.lo + float("-inf"))
     
-    def like(self, x):
+    def like(self, x, prior):
         mu, sd = self.mid(), (self.div() + 1E-30)
         nom = math.exp(-0.5 * ((x - mu) ** 2) / (sd ** 2))
         denom = (sd * 2.5 + 1E-30)

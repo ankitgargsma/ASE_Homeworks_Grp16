@@ -4,10 +4,13 @@ from num import NUM
 from test import Tests
 from sym import SYM
 import sys
+from config import *
 from collections import defaultdict
 
 class gate:
     def run(self, fileFlag, testFlag):
+        t = settings(help_str)
+
         if testFlag == "stats":
             data = DATA(fileFlag)
             print(data.stats())
@@ -15,6 +18,10 @@ class gate:
             self.process_csv(fileFlag)
         elif testFlag == "all":
             Tests().run_tests()
+        elif testFlag == "bayes":
+            self.bayes();
+        elif testFlag == "km_feature":
+            self.km_func();
         else:
             self.run_specific_test(testFlag)  
 
@@ -26,23 +33,37 @@ class gate:
         else:
             print(f"Unknown test: {test_name}")
 
-    def learn(data, row, my, n_hypotheses, most, tmp, out):
+    def learn(self, data, row, my):
             my['n'] += 1
             kl = row.cells[data.cols.klass.at]
             if my['n'] > 10:
                 my['tries'] += 1
-                my['acc'] += 1 if kl == row.likes(my['datas'], my['n'], n_hypotheses, most, tmp, out)[0] else 0
+                my['acc'] += 1 if kl == row.likes(my['datas'])[0] else 0
             my['datas'][kl] = my['datas'].get(kl, DATA(data.cols.names))
             my['datas'][kl].add(row)
 
-    def bayes():
+    def bayes(self):
             wme = {'acc': 0, 'datas': {}, 'tries': 0, 'n': 0}
-            n_hypotheses, most, tmp, out = 0, None, None, None 
-            DATA(t['file'], lambda data, t: learn(data, t, wme, n_hypotheses, most, tmp, out))
-            accuracy = wme['acc'] / wme['tries']
+            DATA(t['file'], lambda data, t: self.learn(data, t, wme))
+            accuracy = (wme['acc'] / wme['tries'])*100
             print(accuracy)
-            return accuracy
     
+    def km_func(self):
+            highest_k, highest_m = None, None
+            highest_accuracy = 0
+            for k in range(4):
+                for m in range(1, 4):
+                    the['k'] = k
+                    the['m'] = m
+                    wme = {"acc": 0, "datas": {}, "tries": 0, "n": 0}
+                    DATA(t['file'], lambda data, t: self.learn(data, t, wme))
+                    accuracy = (wme['acc'] / wme['tries']) * 100
+                    print(f'For k value = {k} and m value = {m}, accuracy is {accuracy:.2f}%')
+                    if accuracy > highest_accuracy:
+                        highest_accuracy = accuracy
+                        highest_k, highest_m = k, m
+
+            print(f'Recommended combination is: k value = {highest_k}, m value = {highest_m}, with the best accuracy of {highest_accuracy:.2f}%')
 
     def process_csv(self, file_path):
         class_counts = defaultdict(int)
@@ -71,6 +92,7 @@ class gate:
         print(f"Total | {total_rows} | 100.00%")
 
 if __name__ == "__main__":
+    t = settings(help_str)
     fileFlag, testFlag = None, None
 
     i = 0
