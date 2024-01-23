@@ -14,8 +14,8 @@ Homework repository for **CSC 591 021 Group-16**<br/>
 - HW 3:
   1. Install Python 3.10.6
   2. cd into hw03/src folder of homework and run - 
-  -```python -m gate -f .\diabetes.csv -t csv_ascii```  -> For Task 1
-  -```python .\gate.py -f .\soybean.csv -t km_feature``` -> For remaining tasks
+   <br /> ```python -m gate -f .\diabetes.csv -t csv_ascii```  -> For Task 1
+   <br /> ```python .\gate.py -f .\soybean.csv -t km_feature``` -> For remaining tasks
 
 # Team Members
  - Rhythm Jagota
