@@ -17,7 +17,6 @@ Homework repository for **CSC 591 021 Group-16**<br/>
    <br /> ```python -m gate -f .\diabetes.csv -t csv_ascii```
    <br /> OR
    <br /> ```python -m gate -f .\soybean.csv -t csv_ascii``` -> For Task 1
-
    <br /> ```python .\gate.py -f .\diabetes.csv -t km_feature```
    <br /> OR
    <br /> ```python .\gate.py -f .\soybean.csv -t km_feature``` -> For remaining tasks
