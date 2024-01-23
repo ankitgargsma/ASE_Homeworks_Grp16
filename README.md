@@ -3,12 +3,19 @@
 
 # About
 Homework repository for **CSC 591 021 Group-16**<br/>
-- HW1 - Conversion of <a href="https://github.com/timm/lo/blob/main/docs/gatecode.pdf">script.lua</a> to Python, including the test cases.
+- HW2 - Conversion of <a href="https://github.com/timm/lo/blob/main/docs/gatecode.pdf">script.lua</a> to Python, including the test cases.
+- HW3 - Implementing Task 1, 2, 3 and 4 as per <a href="https://github.com/txt/aa24/blob/main/docs/hw03.md">script.lua</a>, including the test cases.
   
 # Steps to run
-- HW 1:
+- HW 2:
   1. Install Python 3.10.6
-  2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t stats```. 
+  2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t stats```.
+     
+- HW 3:
+  1. Install Python 3.10.6
+  2. cd into hw03/src folder of homework and run
+     ```python -m gate -f .\diabetes.csv -t csv_ascii```  -> For Task 1
+     ```python .\gate.py -f .\soybean.csv -t km_feature``` -> For remaining tasks
 
 # Team Members
  - Rhythm Jagota
