@@ -5,7 +5,9 @@ from cols import COLS
 from data import DATA
 from utils import *
 import math
-import sys  
+import sys 
+import platform
+import os 
 
 class MockRow:
     def __init__(self, cells):
@@ -28,6 +30,10 @@ class Tests:
         self.test_mid()
         self.test_div()
         self.test_Util_cells()
+        self.test_coerce()
+        self.test_roundNumbers()
+        self.testAddInSym()
+       
         print("PASS")
 
     ## Helper function
@@ -138,6 +144,30 @@ class Tests:
         input_str = "1, 2, 123789, true, false, null, AA24"
         result = cells(input_str)
         assert result == [1, 2, 123789, 'true', 'false', 'null', "AA24"]
+
+    def test_coerce(self):
+        values_to_test = [("100", 100), ("3.14", 3.14), 
+                          ("False", False), ("Hello", "Hello")]
+        for input_val, expected_output in values_to_test:
+            assert coerce(input_val) == expected_output
+
+    def test_roundNumbers(self):
+        numbers_to_round = [(3.14159, 2, 3.14), (10.8, 0, 11), 
+                        (0.333, 1, 0.3)]
+        for num, precision, expected in numbers_to_round:
+            assert round(num, precision) == expected
+
+    def testAddMid(self):
+        num_object = NUM('','')
+        for num in [200, 300, 400, 500, 600]:
+            num_object.add(num)
+        assert num_object.mid() == 400
+    
+    def testAddInSym(self):
+        sym_obj = SYM()
+        for x in ["c","c","c","b","b","c","d"]:
+            sym_obj.add(x)
+        return sym_obj.mid() == "c"
 
 
     '''def test_data_initialization_from_dict(self):
