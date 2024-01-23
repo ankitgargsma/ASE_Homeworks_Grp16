@@ -20,6 +20,8 @@ Homework repository for **CSC 591 021 Group-16**<br/>
    <br /> ```python .\gate.py -f .\diabetes.csv -t km_feature```
    <br /> OR
    <br /> ```python .\gate.py -f .\soybean.csv -t km_feature``` -> For remaining tasks
+   <br /> To run all testcases
+   <br /> ```python .\gate.py -f .\auto93.csv -t all```
   
 
 # Team Members
