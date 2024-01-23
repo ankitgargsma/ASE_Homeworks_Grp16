@@ -26,7 +26,11 @@ def l_rnd(n, ndecs):
 def coerce(x):
     try : return ast.literal_eval(x)
     except Exception: return x.strip()
-   
+
+def output(x):
+    items = ", ".join([f"{k}: {v}" for k, v in sorted(x.items()) if k[0] != "_"])
+    return f"{{{items}}}"
+
 def cells(s):
     t = [coerce(s1) for s1 in s.split(",")]
     return t

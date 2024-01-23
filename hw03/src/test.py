@@ -33,7 +33,8 @@ class Tests:
         self.test_coerce()
         self.test_roundNumbers()
         self.testAddInSym()
-       
+        self.coerceTest2()
+        self.UtilsAnswerCheck()
         print("PASS")
 
     ## Helper function
@@ -168,6 +169,14 @@ class Tests:
         for x in ["c","c","c","b","b","c","d"]:
             sym_obj.add(x)
         return sym_obj.mid() == "c"
+
+    def coerceTest2(self):
+        dict_ex = coerce("{'a': 1, 'b': 2}")
+        return type(dict_ex) == dict
+    
+    def UtilsAnswerCheck(self):
+        out = output({"a": 1, "b": 2})
+        return out == "{a: 1, b: 2}"
 
 
     '''def test_data_initialization_from_dict(self):
