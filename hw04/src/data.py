@@ -41,3 +41,18 @@ class DATA:
                 Stats[f"{col.txt}"] = mode
 
         return Stats
+    
+    def bestRest(self,rows, want):
+        rows.sort(key=lambda row: self.d2h(row))
+
+        # Initialize best and rest lists with column names
+        best, rest = [self.cols.names], [self.cols.names]
+
+        # Split rows into best and rest
+        for i, row in enumerate(rows, 1):
+            if i <= want:
+                best.append(row)
+            else:
+                rest.append(row)
+
+    #def split(best, rest, lite, dark):
