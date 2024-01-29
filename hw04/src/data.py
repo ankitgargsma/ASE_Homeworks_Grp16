@@ -3,6 +3,7 @@ from cols import COLS
 from sym import SYM
 from num import NUM
 from utils import *;
+import random
 
 class DATA:
     def __init__(self, src=[], fun=None):
@@ -43,7 +44,7 @@ class DATA:
         return Stats
     
     def bestRest(self,rows, want):
-        rows.sort(key=lambda row: self.d2h(row))
+        rows.sort(key=lambda row: row.d2h(self))
 
         # Initialize best and rest lists with column names
         best, rest = [self.cols.names], [self.cols.names]
@@ -54,6 +55,7 @@ class DATA:
                 best.append(row)
             else:
                 rest.append(row)
+        return DATA(best), DATA(rest)
 
     def split(self, best, rest, lite, dark):
         selected = DATA([self.cols.names])
@@ -72,3 +74,21 @@ class DATA:
                 out, max_val = i, tmp
 
         return out, selected
+
+    def gate(self, budget0, budget, some):
+        rows = self.rows[:]
+        random.shuffle(rows)
+        lite = rows[:budget0]
+        dark = rows[budget0:]
+
+        stats = []
+        bests = []
+
+        for _ in range(budget):
+            best, rest = self.bestRest(lite, int(round(len(lite) ** some,1)))
+            todo, selected = self.split(best, rest, lite, dark)
+            stats.append(selected.mid())
+            bests.append(best)
+            lite.append(dark.pop(todo))
+
+        return stats, bests

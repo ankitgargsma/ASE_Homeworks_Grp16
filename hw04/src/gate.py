@@ -22,6 +22,9 @@ class gate:
             self.bayes();
         elif testFlag == "km_feature":
             self.km_func();
+        elif testFlag == "gate":
+            data = DATA(fileFlag)
+            data.gate(6,10,0.5);
         else:
             self.run_specific_test(testFlag)  
 
