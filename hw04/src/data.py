@@ -4,6 +4,7 @@ from sym import SYM
 from num import NUM
 from utils import *;
 import random
+import config
 
 class DATA:
     def __init__(self, src=[], fun=None):
@@ -75,6 +76,7 @@ class DATA:
         stats = []
         bests = []
 
+        random.seed(config.Seed)
         random.shuffle(self.rows)
         lite = slice(self.rows, 0, budget0)
         dark = slice(self.rows, budget0 + 1)

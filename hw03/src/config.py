@@ -18,7 +18,7 @@ LIST OF TESTS:
   all test cases:
     'all'
 """
-Seed = 937162211
+Seed = 1929393
 
 help_str = __doc__
 
