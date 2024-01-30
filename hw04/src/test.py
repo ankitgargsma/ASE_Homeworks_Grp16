@@ -8,6 +8,7 @@ import math
 import sys 
 import platform
 import os 
+import config
 from config import *
 import random
 
@@ -182,10 +183,10 @@ class Tests:
         return out == "{a: 1, b: 2}"
     
     def reset_seed(self):
-        random.seed(Seed)
+        random.seed(config.Seed)
 
     def gateFor20(self):
-       self.reset_seed()
+       #self.reset_seed()
        print("#best, mid")
        for i in range(20):
            d = DATA("./auto93.csv")
