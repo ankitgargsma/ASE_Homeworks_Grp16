@@ -37,6 +37,7 @@ class Tests:
         self.testAddInSym()
         self.coerceTest2()
         self.UtilsAnswerCheck()
+        self.random_cells_test()
         print("PASS")
 
     ## Helper function
@@ -216,5 +217,11 @@ class Tests:
         self.assertEqual(result[".N"], len(data_instance.rows))
     
 '''
+
+    def random_cells_test(self):
+        random_numbers = [random.randint(1, 100) for _ in range(5)]
+        input_str = ", ".join(map(str, random_numbers))
+        result = cells(input_str)
+        assert result == random_numbers
 #test_instance = Tests()
 #test_instance.run_tests()
