@@ -24,6 +24,8 @@ class gate:
             self.km_func();
         elif testFlag == "gateFor20":
             self.run_specific_test(testFlag)
+        elif testFlag == "gate":
+            self.run_specific_test(testFlag)
         else:
             self.run_specific_test(testFlag)  
 

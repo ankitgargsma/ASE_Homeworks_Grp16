@@ -1,5 +1,6 @@
 import sys, re, math, ast
 from pathlib import Path
+import random, time
 
 THE_M = 2
 THE_K = 1
@@ -23,9 +24,13 @@ def l_rnd(n, ndecs):
         mult = 10**(ndecs or 2)
         return math.floor(n * mult + 0.5) / mult
 
-def coerce(x):
-    try : return ast.literal_eval(x)
-    except Exception: return x.strip()
+def coerce(s):
+    def coerce_helper(s2):
+        return None if s2 == "null" else s2.lower() == "true" or (s2.lower() != "false" and s2)
+    try:
+        return float(s) if s is not None else None
+    except ValueError:
+        return coerce_helper(re.match(r'^\s*(.*\S)', s).group(1)) if isinstance(s, str) else s
 
 def output(x):
     items = ", ".join([f"{k}: {v}" for k, v in sorted(x.items()) if k[0] != "_"])
@@ -86,3 +91,7 @@ def slice(t: list, go: int = None, stop: int = None, inc: int = None) -> list:
         stop += len(t)
 
     return t[go:stop:inc]
+
+def set_random_seed():
+        seed = int(re.sub(r'[^0-9]', '', str(time.time())[-7:]))
+        return seed

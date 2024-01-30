@@ -194,6 +194,23 @@ class Tests:
            stat, best = stats[-1], bests[-1]
            print(round(best.d2h(d), 2), round(stat.d2h(d), 2))
 
+    def gate(self):
+            budget0, budget, some = 4, 10, 0.5
+            for i in range(20):
+                d = DATA("./auto93.csv") 
+                d.gate(budget0, budget, some)
+
+            print('\n'.join(map(str, DATA.list_1)))
+            print('\n')
+            print('\n'.join(map(str, DATA.list_2)))
+            print('\n')
+            print('\n'.join(map(str, DATA.list_3)))
+            print('\n')
+            print('\n'.join(map(str, DATA.list_4)))
+            print('\n')
+            print('\n'.join(map(str, DATA.list_5)))
+            print('\n')
+            print('\n'.join(map(str, DATA.list_6)))
 
 
     '''def test_data_initialization_from_dict(self):
