@@ -223,5 +223,29 @@ class Tests:
         input_str = ", ".join(map(str, random_numbers))
         result = cells(input_str)
         assert result == random_numbers
+
+        
+    def test_rounding_with_different_numbers(self):
+        test_cases = [(3.14159, 2, 3.14), (10.8, 0, 11), 
+                  (0.333, 1, 0.3)]
+                  
+        for num, precision, expected in test_cases:
+            assert round(num, precision) == expected
+
+    def test_similarity_likelihood_with_different_values(self):
+    # Create an instance of the SYM class
+        sym_instance = SYM()
+        sym_instance.add("X")
+        sym_instance.add("Y")
+        sym_instance.add("Z")
+        sym_instance.add("X")
+        sym_instance.add("Y")
+
+        target_element = "Y"
+        prior_value = 0.2
+
+        calculated_likelihood = sym_instance.like(target_element, prior_value)
+        expected_likelihood = ((2) + 0.00001 * 0.2) / (5 + 0.00001)
+        self.assertTrue(math.isclose(calculated_likelihood, expected_likelihood, abs_tol=0.0572))
 #test_instance = Tests()
 #test_instance.run_tests()
