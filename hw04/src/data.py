@@ -26,8 +26,10 @@ class DATA:
             self.cols = COLS(row)
 
     def mid(self, cols=None):
-        u = [col.mid() for col in (cols or self.cols.all)]
-        return ROW.new(u)
+        u = []
+        for col in cols or self.cols.all:
+            u.append(col.mid())
+        return ROW(u)
     
     def stats(data):
         Stats = {}
@@ -42,53 +44,48 @@ class DATA:
                 Stats[f"{col.txt}"] = mode
 
         return Stats
-    
-    def bestRest(self,rows, want):
-        rows.sort(key=lambda row: row.d2h(self))
-
-        # Initialize best and rest lists with column names
-        best, rest = [self.cols.names], [self.cols.names]
-
-        # Split rows into best and rest
-        for i, row in enumerate(rows, 1):
-            if i <= want:
-                best.append(row)
-            else:
-                rest.append(row)
-        return DATA(best), DATA(rest)
 
     def split(self, best, rest, lite, dark):
-        selected = DATA([self.cols.names])
-        max_val = 1E30
+        selected = DATA(self.cols.names)
+        max = 1e30
         out = 1
 
-        for i, row in enumerate(dark, 1):
+        for i, row in enumerate(dark):
             b = row.like(best, len(lite), 2)
             r = row.like(rest, len(lite), 2)
-            
             if b > r:
                 selected.add(row)
-            
-            tmp = abs(b + r) / abs(b - r + 1E-300)
-            if tmp > max_val:
-                out, max_val = i, tmp
 
+            tmp = abs(b + r) / abs(b - r + 1e-300)
+            if tmp > max:
+                out, max = i, tmp
         return out, selected
 
-    def gate(self, budget0, budget, some):
-        rows = self.rows[:]
-        random.shuffle(rows)
-        lite = rows[:budget0]
-        dark = rows[budget0:]
-
+    def best_rest(self, rows, want, best=None, rest=None):
+        rows.sort(key=lambda x: x.d2h(self))
+        best, rest = DATA(self.cols.names), DATA(self.cols.names)
+        for i in range(len(rows)):
+            if i <= want:
+                best.add(rows[i])
+            else:
+                rest.add(rows[i])
+        return best, rest
+    
+    def gate(self, budget0: int, budget, some):
         stats = []
         bests = []
 
-        for _ in range(budget):
-            best, rest = self.bestRest(lite, int(round(len(lite) ** some,1)))
+        random.shuffle(self.rows)
+        lite = slice(self.rows, 0, budget0)
+        dark = slice(self.rows, budget0 + 1)
+
+        for i in range(budget):
+            best, rest = self.best_rest(lite, len(lite) ** some)
             todo, selected = self.split(best, rest, lite, dark)
             stats.append(selected.mid())
-            bests.append(best)
+            bests.append(best.rows[0])
+
             lite.append(dark.pop(todo))
 
         return stats, bests
+    

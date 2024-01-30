@@ -8,6 +8,8 @@ import math
 import sys 
 import platform
 import os 
+from config import *
+import random
 
 class MockRow:
     def __init__(self, cells):
@@ -177,6 +179,19 @@ class Tests:
     def UtilsAnswerCheck(self):
         out = output({"a": 1, "b": 2})
         return out == "{a: 1, b: 2}"
+    
+    def reset_seed(self):
+        random.seed(Seed)
+
+    def gateFor20(self):
+       self.reset_seed()
+       print("#best, mid")
+       for i in range(20):
+           d = DATA("./auto93.csv")
+           stats, bests = d.gate(4, 16, 0.5)
+           stat, best = stats[-1], bests[-1]
+           print(round(best.d2h(d), 2), round(stat.d2h(d), 2))
+
 
 
     '''def test_data_initialization_from_dict(self):
