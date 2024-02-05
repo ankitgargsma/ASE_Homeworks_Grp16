@@ -119,3 +119,12 @@ class DATA:
             lite.append(dark.pop(todo))
             
         return stats, bests
+    
+    def farApart(self, rows, sortp, a):
+        far = int * ((len(rows) * config.value.Far) // 1)
+        evals = 1 if a else 2
+        a = a or any(rows).neighbors(self, rows)[far]
+        b = a.neighbors(self, rows)[far]
+        if sortp and b.d2h(self) < a.d2h(self):
+            a, b = b, a
+        return a, b, a.dist(b, self), evals

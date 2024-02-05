@@ -30,3 +30,6 @@ class SYM:
 
     def like(self, x, prior):
         return ((self.has.get(x, 0) or 0) + utils.THE_M * prior) / (self.n + utils.THE_M)
+    
+    def dist(self, x, y):
+        return 1 if (x == "?" and y == "?") else (0 if x == y else 1)

@@ -52,3 +52,17 @@ class NUM:
         nom = math.exp(-0.5 * ((x - mu) ** 2) / (sd ** 2))
         denom = (sd * 2.5 + 1E-30)
         return nom / denom
+    
+    def dist(self, x, y):
+        if x == "?" and y == "?":
+            return 1
+
+        x, y = self.norm(x), self.norm(y)
+
+        if x == "?":
+            x = 1 if y < 0.5 else 0
+
+        if y == "?":
+            y = 1 if x < 0.5 else 0
+
+        return math.abs(x - y)

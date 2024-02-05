@@ -95,3 +95,6 @@ def slice(t: list, go: int = None, stop: int = None, inc: int = None) -> list:
 def set_random_seed():
         seed = int(re.sub(r'[^0-9]', '', str(time.time())[-7:]))
         return seed
+
+def any(t):
+    return random.choice(t)
