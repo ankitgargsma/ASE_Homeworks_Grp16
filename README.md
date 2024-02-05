@@ -26,6 +26,12 @@ Homework repository for **CSC 591 021 Group-13**<br/>
 - HW 4:
   1. Install Python 3.10.6
   2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t gate```.
+ 
+-HW5:
+  1. Install Python 3.10.6
+  2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t far```.
+  3. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t distance```.
+
 
 # Team Members
  - Rhythm Jagota
