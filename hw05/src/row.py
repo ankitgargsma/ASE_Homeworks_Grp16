@@ -56,12 +56,13 @@ class ROW:
             d += (abs(col.heaven - col.norm(self.cells[col.at])) ** 2)
         return (d ** 0.5) / (n ** 0.5)
     
-    def dist(self, other, data, d: int = 0, n: int = 0, p=2):
-        for col in data.cols.x.values():
+    def dist(self, other, data, d=0, n=0):
+        p = utils.THE_P
+        for col in data.cols.x:
             n += 1
-            d += col.dist(self.cells[col.at], other.cells[col.at]) ** 2
+            d += col.dist(self.cells[col.at], other.cells[col.at]) ** p
         return (d / n) ** (1 / p)
 
-    def neighbors(self, data, rows):
+    def neighbors(self, data, rows=None):
         rows = rows if rows else data.rows
         return sorted(rows, key=lambda row: self.dist(row, data))

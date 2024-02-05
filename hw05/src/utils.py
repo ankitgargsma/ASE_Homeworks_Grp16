@@ -4,6 +4,8 @@ import random, time
 
 THE_M = 2
 THE_K = 1
+THE_FAR = .95
+THE_P = 2
 
 def rand(lo, hi):
     lo, hi = lo or 0, hi or 1

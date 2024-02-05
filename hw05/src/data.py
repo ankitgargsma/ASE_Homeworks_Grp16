@@ -5,6 +5,7 @@ from num import NUM
 from utils import *;
 import random
 import config
+import utils
 
 class DATA:
 
@@ -120,8 +121,8 @@ class DATA:
             
         return stats, bests
     
-    def farApart(self, rows, sortp, a):
-        far = int * ((len(rows) * config.value.Far) // 1)
+    def farApart(self, rows, sortp=True, a=None):
+        far = int((len(rows) * utils.THE_FAR) // 1)
         evals = 1 if a else 2
         a = a or any(rows).neighbors(self, rows)[far]
         b = a.neighbors(self, rows)[far]

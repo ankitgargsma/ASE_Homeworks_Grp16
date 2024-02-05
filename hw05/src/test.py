@@ -265,5 +265,37 @@ class Tests:
         calculated_likelihood = sym_instance.like(target_element, prior_value)
         expected_likelihood = ((2) + 0.00001 * 0.2) / (5 + 0.00001)
         self.assertTrue(math.isclose(calculated_likelihood, expected_likelihood, abs_tol=0.0572))
-#test_instance = Tests()
-#test_instance.run_tests()
+
+    def distance(self):
+        # Load auto93.csv file into a DATA object
+        data = DATA("./auto93.csv")
+
+        # Get the first row
+        first_row = data.rows[0]
+
+        # Find the neighbors of the first row
+        rows = first_row.neighbors(data)
+
+        # Initialize the index
+        index = 1
+
+        # Iterate over the neighbors and print every 30th row along with the distance from that row to the first row
+        print("Index\tRow\t\t\tDistance to First Row")
+        for i, row in enumerate(rows):
+            if (i + 1) % 30 == 0:
+                distance_to_first_row = row.dist(first_row, data)
+                print(f"{index}\t{row.cells}\t{rnd(distance_to_first_row)}")
+                index += 30
+
+
+                
+    def far(self):
+        d = DATA("./auto93.csv")
+
+        far1, far2, distance, evals = d.farApart(d.rows)
+
+        #Print Output
+        print(f"far1: {far1.cells}")
+        print(f"far2: {far2.cells}")
+        print(f"distance = {distance:.2f}")
+        print(f"Number of Y evaluations used: {evals}")
