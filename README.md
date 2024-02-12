@@ -27,6 +27,11 @@ Homework repository for **CSC 591 021 Group-13**<br/>
   1. Install Python 3.10.6
   2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t gate```.
  
+  Questions:
+  1. Yes
+  2. One per row, 398
+  3. It provides a good approximate value
+ 
 -HW5:
   1. Install Python 3.10.6
   2. cd into src folder of homework and run ```python -m gate -f .\auto93.csv -t far```.
