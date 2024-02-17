@@ -1,5 +1,6 @@
 from datetime import datetime
 from io import StringIO
+from statistics import mean
 from row import ROW
 from num import NUM
 from sym import SYM
@@ -335,3 +336,30 @@ class Tests:
         # Print div values
         print("div\t\t", "\t".join(map(str, div_values)),"\t\t", mdiv_d2h)
         print("#")
+        for i in range(repeats):
+            stats, bests = d.gate(4, 9, 0.5)
+            best = bests[-1]
+
+            # Print SMO9 values
+            print(f"smo9\t\t{best.cells}\t\t{best.d2h(d)}")
+
+        print("#")
+
+        for i in range(20):
+            # Randomly select 50 rows
+            selected_rows = random.sample(d.rows, 50)
+
+            # Find the row with the smallest distance to heaven
+            min_row = min(selected_rows, key=lambda row: row.d2h(d))
+
+            # Print any50 values
+            print(f"any50\t\t{min_row.cells}\t\t{min_row.d2h(d)}")
+
+
+        print("#")
+
+        # Find the row with the smallest distance to heaven among all rows
+        min_row_all = min(d.rows, key=lambda row: row.d2h(d))
+
+        # Print the best row and its d2h
+        print(f"100%\t\t{min_row_all.cells}\t\t{min_row_all.d2h(d)}")

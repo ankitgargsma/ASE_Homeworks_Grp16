@@ -79,7 +79,7 @@ class DATA:
         return best, rest
     
     def gate(self, budget0, budget, some):
-        random.seed(set_random_seed())
+        random.seed(config.Seed)
         rows = random.sample(self.rows, len(self.rows)) 
         #y values of first 6 examples in ROWS
         DATA.list_1.append(f"1. top6: {[r.cells[len(r.cells)-3:] for r in rows[:6]]}")
