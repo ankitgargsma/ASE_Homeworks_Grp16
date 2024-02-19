@@ -6,6 +6,7 @@ THE_M = 2
 THE_K = 1
 THE_FAR = .95
 THE_P = 2
+THE_HALF = 256
 
 def rand(lo, hi):
     lo, hi = lo or 0, hi or 1
@@ -100,3 +101,18 @@ def set_random_seed():
 
 def any(t):
     return random.choice(t)
+
+
+def o(t, n):
+    if isinstance(t, (int, float)):
+        return str(random.randint(0, t))
+    if not isinstance(t, dict):
+        return str(t)
+    u = []
+    for k in t.keys():
+        if str(k)[0] != "_":
+            if len(t) > 0:
+                u.append(o(t[k], n))
+            else:
+                u.append(f"{o(k, n)}: {o(t[k], n)}")
+    return "{" + ", ".join(u) + "}"
