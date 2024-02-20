@@ -1,23 +1,11 @@
 import math
-import utils
+from utils import *
 from config import *
 
 class ROW:
     def __init__(self, t):
         self.cells = t
 
-    '''def like(self, data, n, n_hypotheses):
-        prior = (len(data.rows) + the['k']) / (n + the['k'] * n_hypotheses)
-        out = math.log(prior)
-        
-        for col in data.cols.x:
-            v = self.cells[col.at]
-            if v != "?":
-                inc = col.like(v, prior)
-                out += math.log(inc)
-
-        return math.exp(out)
-    '''
     def like(self, data, n, nHypothesis):
         #k = config.value.k
         k = the['k']
@@ -50,19 +38,18 @@ class ROW:
         return out, most
     
     def d2h(self, data):
-        d, n = 0, 0
+        d, n, p = 0, 0, 2
         for col in data.cols.y:
             n += 1
-            d += (abs(col.heaven - col.norm(self.cells[col.at])) ** 2)
-        return (d ** 0.5) / (n ** 0.5)
+            d += abs(col.heaven - col.norm(self.cells[col.at])) ** p
+        return math.sqrt(d) / math.sqrt(n)
     
     def dist(self, other, data, d=0, n=0):
-        p = utils.THE_P
+        d, n, p = 0, 0, 2
         for col in data.cols.x:
             n += 1
             d += col.dist(self.cells[col.at], other.cells[col.at]) ** p
         return (d / n) ** (1 / p)
 
     def neighbors(self, data, rows=None):
-        rows = rows if rows else data.rows
-        return sorted(rows, key=lambda row: self.dist(row, data))
+        return keysort(rows or data.rows, lambda row: self.dist(row, data))

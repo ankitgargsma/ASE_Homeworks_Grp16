@@ -315,7 +315,7 @@ class Tests:
     def far(self):
         d = DATA("./auto93.csv")
 
-        far1, far2, distance, evals = d.farApart(d.rows)
+        far1, far2, distance, evals = d.farapart(d.rows, True)
 
         #Print Output
         print(f"far1: {far1.cells}")

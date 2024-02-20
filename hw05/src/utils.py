@@ -18,6 +18,11 @@ def rnd(n, nPlaces = 3):
     mult = 10**nPlaces
     return math.floor(n * mult + 0.5) / mult
 
+def keysort(t, fun):
+    u = [{'x': x, 'y': fun(x)} for x in t]
+    u.sort(key=lambda a: a['y'])
+    v = [xy['x'] for xy in u]
+    return v
 
 def l_rnd(n, ndecs=2):
         if not isinstance(n, (int, float)):
