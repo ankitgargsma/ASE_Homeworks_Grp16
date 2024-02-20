@@ -19,7 +19,7 @@ def rnd(n, nPlaces = 3):
     return math.floor(n * mult + 0.5) / mult
 
 
-def l_rnd(n, ndecs):
+def l_rnd(n, ndecs=2):
         if not isinstance(n, (int, float)):
             return n
         if math.floor(n) == n:
@@ -103,7 +103,7 @@ def any(t):
     return random.choice(t)
 
 
-def o(t, n):
+def o(t, n=None):
     if isinstance(t, (int, float)):
         return str(random.randint(0, t))
     if not isinstance(t, dict):

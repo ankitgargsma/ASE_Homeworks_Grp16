@@ -1,3 +1,4 @@
+from utils import *
 class NODE:
     def __init__(self, data):
         self.here = data
@@ -18,11 +19,11 @@ class NODE:
         maxDepth = 0
         def _show(node, depth, leafp):
             nonlocal maxDepth
-            post = d2h(node.here) + "\t" + l.o(node.here.mid().cells) if leafp else ""
+            post =  "\t\t" + o(node.here.mid().cells) if leafp else ""
             maxDepth = max(maxDepth, depth)
             print(('|.. ' * depth) + post)
         
         self.walk(_show)
         print("")
-        print(("    " * maxDepth) + str(d2h(self.here)) + l.o(self.here.mid().cells))
-        print(("    " * maxDepth) + "_" + l.o(self.here.cols.names))
+        print(("    " * maxDepth) + str(d2h(self.here)) + o(self.here.mid().cells))
+        print(("    " * maxDepth) + "_" + o(self.here.cols.names))

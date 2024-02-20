@@ -212,6 +212,29 @@ class Tests:
             print('\n')
             print('\n'.join(map(str, DATA.list_6)))
 
+    def tree(self):
+        data_new = DATA("./auto93.csv")
+        print("Task 1: Implementation of the recursive tree \n")
+        t, evals = data_new.tree(True)
+        t.show()
+        print("evals: ", evals)
+
+    def cluster(self):
+        data_new = DATA("./auto93.csv")
+        print("Task 2: Implementation of Optimization output - Single Descent\n")
+        best, rest, evals = data_new.branch()
+        print("centroid of output cluster: ")
+        print(o(best.mid().cells), o(rest.mid().cells))
+        print("evals: ", evals)
+
+    def doubletap(self):
+        data_new = DATA("./auto93.csv")
+        print("Task 3: doubletap\n")
+        best1, rest, evals1 = data_new.branch(32)
+        best2, _, evals2 = best1.branch(4)
+        print("median and best found in that four: ")
+        print(o(best2.mid().cells), o(rest.mid().cells))
+        print("evals: ",evals1 + evals2)
 
     '''def test_data_initialization_from_dict(self):
         data_dict = {
@@ -299,3 +322,5 @@ class Tests:
         print(f"far2: {far2.cells}")
         print(f"distance = {distance:.2f}")
         print(f"Number of Y evaluations used: {evals}")
+
+    

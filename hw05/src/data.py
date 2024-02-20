@@ -122,8 +122,9 @@ class DATA:
             
         return stats, bests
     
+    '''
     def farApart(self, rows, sortp=True, a=None):
-        far = int((len(rows) * utils.THE_FAR) // 1)
+        far = int(len(rows) * 0.95) + 1
         evals = 1 if a else 2
         a = a or any(rows).neighbors(self, rows)[far]
         b = a.neighbors(self, rows)[far]
@@ -132,7 +133,7 @@ class DATA:
         return a, b, a.dist(b, self), evals
     
     def half(self, rows, sortp, before):
-        some = self.many(rows, min(utils.THE_HALF, len(rows)))
+        some = min(len(rows) // 2, len(rows))
         a, b, C, evals = self.farApart(some, sortp, before)
         
         def d(row1, row2):
@@ -141,7 +142,7 @@ class DATA:
         def project(r):
             return (d(r, a) ** 2 + C ** 2 - d(r, b) ** 2) / (2 * C)
         
-        as_, bs = [], []
+        as_, bs = [], []    
         for n, row in enumerate(sorted(rows, key=project)):
             if n <= (len(rows) // 2):
                 as_.append(row)
@@ -153,8 +154,9 @@ class DATA:
     def tree(self, sortp):
         evals = [0]
 
-        def _tree(data, above):
-            node = NODE.new(data)
+        def _tree(data, above=None):
+            nonlocal evals
+            node = NODE(data)
             if len(data.rows) > 2 * (len(self.rows) ** 0.5):
                 lefts, rights, node.left, node.right, node.C, node.cut, evals1 = self.half(data.rows, sortp, above)
                 evals[0] += evals1
@@ -186,3 +188,110 @@ class DATA:
                 return self.clone(data.rows), self.clone(rest), evals
         
         return _branch(self)
+    '''
+
+    def farapart(self, rows, sortp, a=None, b=None, far=None, evals=0):
+        far = int(len(rows) * 0.95) + 1
+        evals = 1 if a is not None else 2
+        
+        a = a or random.choice(rows)
+    
+        sorted_neighbors = a.neighbors(self, rows)
+        a = a or sorted_neighbors[0]
+        b = sorted_neighbors[min(far, len(sorted_neighbors) - 1)]
+        
+        if sortp and b.d2h(self) < a.d2h(self):
+            a, b = b, a
+        
+        return a, b, a.dist(b, self), evals
+
+    
+    def half(self, rows, sortp, before):
+        the_half = min(len(rows) // 2, len(rows))
+        some = random.sample(rows, the_half)
+        a, b, C, evals = self.farapart(some, sortp, before)
+        def d(row1, row2):
+            return row1.dist(row2, self)
+        
+        def project(r):
+            try:
+                result = (d(r, a)**2 + C**2 - d(r, b)**2) / (2 * C)
+            except ZeroDivisionError:
+                result = 0
+            return result
+        rows_sorted = sorted(rows, key=project)
+        mid_point = len(rows) // 2
+        as_ = rows_sorted[:mid_point]
+        bs = rows_sorted[mid_point:]
+        return as_, bs, a, b, C, d(a, bs[0]), evals
+    
+    def far(the, data_new):
+        print()
+        print("Task 2: Get Far Working\n")
+        target_distance = 0.95
+        current_distance = 0
+        attempts = 0
+
+        while current_distance < target_distance and attempts < 200:
+            a, b, C, _ = data_new.farapart(data_new.rows, sortp=True)
+            current_distance = C
+            attempts += 1
+            #print(f"Attempt {attempts}: Current Distance = {C}")
+        if current_distance <= target_distance:
+            #print("Far apart points found:")
+            print(f"far1: {a.cells}")
+            print(f"far2: {b.cells}")
+            print(f"distance: {current_distance}")
+        else:
+            print("No pair found within the target distance after maximum attempts.")
+
+        print(f"Total Attempts: {attempts}")
+        return current_distance, attempts
+
+    def tree(self, sortp):
+        evals = 0
+
+        def _tree(data, above = None):
+            nonlocal evals
+            node = NODE(data)
+
+            if len(data.rows) > 2 * (len(self.rows) ** 0.5):
+                lefts, rights, node.left, node.right, node.C, node.cut, evals1 = self.half(data.rows, sortp, above)
+                evals += evals1
+                node.lefts = _tree(self.clone(lefts), node.left)
+                node.rights = _tree(self.clone(rights), node.right)
+
+            return node
+
+        return _tree(self), evals
+
+    def branch(self, stop=None, rest=None, _branch=None, evals=None):
+        evals, rest = 1, []
+        stop = stop or (2 * (len(self.rows) ** 0.5))
+
+        def _branch(data, above=None, left=None, lefts=None, rights=None):
+            nonlocal evals, rest
+
+            if len(data.rows) > stop:
+                lefts, rights, left, _, _, _, _  = self.half(data.rows, True, above)
+                evals += 1
+                for row1 in rights:
+                    rest.append(row1)
+
+                return _branch(self.clone(lefts), left)
+            else:
+                return self.clone(data.rows), self.clone(rest), evals
+
+        return _branch(self)
+
+    def clone(self, rows=None):
+        new = DATA()
+        for row in rows or []:
+            new.add(row)
+        return new
+
+    def clone(self, rows=None, newData=None):
+        new = DATA(self.cols.names) 
+        for row in rows or []:
+            new.add(row)
+        return new

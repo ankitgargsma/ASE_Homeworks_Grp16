@@ -26,6 +26,12 @@ class gate:
             self.run_specific_test(testFlag)
         elif testFlag == "gate":
             self.run_specific_test(testFlag)
+        elif testFlag == "tree":
+            self.run_specific_test(testFlag)
+        elif testFlag == "cluster":
+            self.run_specific_test(testFlag)
+        elif testFlag == "doubletap":
+            self.run_specific_test(testFlag)
         else:
             self.run_specific_test(testFlag)  
 
