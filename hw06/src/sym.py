@@ -33,3 +33,6 @@ class SYM:
     
     def dist(self, x, y):
         return 1 if (x == "?" and y == "?") else (0 if x == y else 1)
+    
+    def norm(self, x):
+        return x

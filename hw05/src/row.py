@@ -42,7 +42,7 @@ class ROW:
         for col in data.cols.y:
             n += 1
             d += abs(col.heaven - col.norm(self.cells[col.at])) ** p
-        return math.sqrt(d) / math.sqrt(n)
+        return (d / n) ** (1 / p)
     
     def dist(self, other, data, d=0, n=0):
         d, n, p = 0, 0, 2

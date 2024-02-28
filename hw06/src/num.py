@@ -45,7 +45,7 @@ class NUM:
     def norm(self,x):
         if x == "?":
             return x
-        return (x - self.lo)/(self.hi - self.lo + float("-inf"))
+        return (x - self.lo)/(self.hi - self.lo + 1E-30)
     
     def like(self, x, prior):
         mu, sd = self.mid(), (self.div() + 1E-30)
