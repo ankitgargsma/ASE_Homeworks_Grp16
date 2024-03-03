@@ -6,18 +6,6 @@ class ROW:
     def __init__(self, t):
         self.cells = t
 
-    '''def like(self, data, n, n_hypotheses):
-        prior = (len(data.rows) + the['k']) / (n + the['k'] * n_hypotheses)
-        out = math.log(prior)
-        
-        for col in data.cols.x:
-            v = self.cells[col.at]
-            if v != "?":
-                inc = col.like(v, prior)
-                out += math.log(inc)
-
-        return math.exp(out)
-    '''
     def like(self, data, n, nHypothesis):
         #k = config.value.k
         k = the['k']
@@ -54,6 +42,7 @@ class ROW:
         for col in data.cols.y:
             n += 1
             d += (abs(col.heaven - col.norm(self.cells[col.at])) ** p)
+        #print (d / n) ** (1 / p)
         return (d / n) ** (1 / p)
     
     def dist(self, other, data, d=0, n=0):

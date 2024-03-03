@@ -129,3 +129,33 @@ class DATA:
         if sortp and b.d2h(self) < a.d2h(self):
             a, b = b, a
         return a, b, a.dist(b, self), evals
+    
+    def stats(self, cols=None, callback=None, ndivs=None, u=None):
+        u = {}
+        for _, col in (cols or self.cols.x).items():
+            u[col.txt] = round(type(col).__getattribute__(col, callback or "mid")(), ndivs)
+        for _, col in (cols or self.cols.y).items():
+            u[col.txt] = round(type(col).__getattribute__(col, callback or "mid")(), ndivs)
+        return list(u.values())
+
+    def stats_divs(self, cols=None, callback=None, ndivs=None, u=None):
+        u = {}
+        for _, col in (cols or self.cols.x).items():
+            u[col.txt] = round(type(col).__getattribute__(col, callback or "div")(), ndivs)
+        for _, col in (cols or self.cols.y).items():
+            u[col.txt] = round(type(col).__getattribute__(col, callback or "div")(), ndivs)
+        return list(u.values())
+
+    def randN(self, n=0):
+        rows = list(self.rows.values())
+        random.shuffle(rows)
+        rowsN = rows[:n]
+        rowsNd2h = [row.d2h(self) for row in rowsN]
+        rowsNd2h.sort()
+        s_temp = ""
+
+        for j in rowsNd2h:
+            s_temp += str(round(j,2))
+            s_temp += "\t"
+        print("N: ",n)
+        print("randN:\t",s_temp)

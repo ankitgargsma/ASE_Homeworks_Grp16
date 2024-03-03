@@ -26,8 +26,10 @@ class gate:
             self.run_specific_test(testFlag)
         elif testFlag == "gate":
             self.run_specific_test(testFlag)
+        elif testFlag == "print_stats":
+            self.run_specific_test(testFlag)
         else:
-            self.run_specific_test(testFlag)  
+            self.run_specific_test(testFlag) 
 
     def run_specific_test(self, test_name):
         test_method = getattr(Tests(), f'{test_name}', None)

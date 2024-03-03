@@ -214,6 +214,23 @@ class Tests:
             print('\n'.join(map(str, DATA.list_5)))
             print('\n')
             print('\n'.join(map(str, DATA.list_6)))
+        
+    
+    def print_stats(self):
+        d = DATA("./auto93.csv")
+        mid = d.stats(ndivs=2)
+        div = d.stats_divs(ndivs=2)
+        m = ""
+        for x in mid:
+            m += str(x)
+            m += "\t"
+        print("mid:\t",m)
+
+        di = ""
+        for x in div:
+            di += str(x)
+            di += "\t"
+        print("div:\t",di)
 
 
     '''def test_data_initialization_from_dict(self):
