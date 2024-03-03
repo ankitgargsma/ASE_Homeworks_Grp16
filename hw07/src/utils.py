@@ -6,6 +6,12 @@ THE_M = 2
 THE_K = 1
 THE_FAR = .95
 THE_P = 2
+THE_BINS = 16
+THE_SUPPORT = 2
+THE_BEAM = 10
+THE_COHEN = .35
+THE_CUT = .1
+THE_SEED = 31210
 
 def rand(lo, hi):
     lo, hi = lo or 0, hi or 1
@@ -100,3 +106,46 @@ def set_random_seed():
 
 def any(t):
     return random.choice(t)
+
+def score(t, goal, LIKE, HATE, tiny=1E-30):
+    like, hate = 0, 0
+    for klass, n in t.items():
+        if klass == goal:
+            like += n
+        else:
+            hate += n
+    like = like / (LIKE + tiny)
+    hate = hate / (HATE + tiny)
+    if hate > like:
+        return 0
+    else:
+        return like ** THE_SUPPORT / (like + hate)
+    
+def entropy(t):
+    n = sum(t.values())
+    e = 0
+    for v in t.values():
+        e -= (v / n) * math.log(v / n, 2)
+    return e, n
+
+def asList(t):
+    u = []
+    for v in t:
+        u.append(t[v])
+    return u
+
+def copy(t):
+    if not isinstance(t, dict):
+        return t
+    
+    u = {}
+    for k, v in t.items():
+        u[copy(k)] = copy(v)
+    return u
+
+def powerset(s):
+    t = [[]]
+    for i in range(len(s)):
+        for j in range(len(t)):
+            t.append([s[i]] + t[j])
+    return t
