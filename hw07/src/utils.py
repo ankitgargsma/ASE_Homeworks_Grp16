@@ -12,6 +12,9 @@ THE_BEAM = 10
 THE_COHEN = .35
 THE_CUT = .1
 THE_SEED = 31210
+THE_d = 32
+THE_D = 4
+THE_HALF = 256
 
 def rand(lo, hi):
     lo, hi = lo or 0, hi or 1
