@@ -56,6 +56,8 @@ Homework repository for **CSC 591 021 Group-13**<br/>
   1. Install Python 3.10.6
   2. cd into src folder of homework and run ```$ python -m gate -f .\auto93.csv -t compare```.
 
+-HW7:
++ See output folder
 
 # Team Members
  - Rhythm Jagota
