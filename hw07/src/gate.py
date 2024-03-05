@@ -5,6 +5,7 @@ from test import Tests
 from sym import SYM
 import sys
 from config import *
+from range import *
 from collections import defaultdict
 
 class gate:
@@ -26,6 +27,8 @@ class gate:
             self.run_specific_test(testFlag)
         elif testFlag == "gate":
             self.run_specific_test(testFlag)
+        elif testFlag == "bins":
+            self.bins()
         else:
             self.run_specific_test(testFlag)  
 
@@ -95,6 +98,34 @@ class gate:
         print("-" * 29)
         print(f"Total | {total_rows} | 100.00%")
 
+    def bins(self):
+        d = DATA("./auto93.csv")
+        best, rest, _ = d.branch()
+        #LIKE = list(best.rows.values())
+        LIKE = best.rows
+        HATE = random.sample(rest.rows, min(3 * len(LIKE), len(rest.rows)))
+
+        def score(range_):
+            return range_.score("LIKE", len(LIKE), len(HATE))
+
+        t = []
+        #for col in list(d.cols.x.values()):
+        for col in list(d.cols.x):
+            print("")
+            for range_ in ranges1(col, {"LIKE": LIKE, "HATE": HATE}):
+                print(range_)
+                t.append(range_)
+
+        '''t.sort(key=lambda a: score(a), reverse=True)
+        max_score = score(t[0])
+        print("\n#scores:\n")
+        #for v in t[:Constants.the.Beam]:
+        for v in t[:THE_BEAM]:
+            if score(v) > max_score * 0.1:
+                 print("{:.2f}".format(round(score(v), 2)), v)
+        
+        print({"LIKE": len(LIKE), "HATE": len(HATE)})
+        '''
 if __name__ == "__main__":
     t = settings(help_str)
     fileFlag, testFlag = None, None

@@ -152,3 +152,10 @@ def powerset(s):
         for j in range(len(t)):
             t.append([s[i]] + t[j])
     return t
+
+def keysort(t, fun):
+    u = [{"x": x, "y": fun(x)} for x in t]  # decorate
+    u.sort(key=lambda a: a["y"])  # sort
+    # print(u[0]['x'].cells)
+    v = [xy["x"] for xy in u]  # undecorate
+    return v

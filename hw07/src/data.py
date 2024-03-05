@@ -3,6 +3,7 @@ from cols import COLS
 from sym import SYM
 from num import NUM
 from utils import *;
+from row import *
 import random
 import config
 import utils
@@ -13,6 +14,7 @@ class DATA:
     list_1, list_2, list_3, list_4, list_5, list_6 = [[] for _ in range(6)]
 
     def __init__(self, src=[], fun=None):
+        #self.rows = {}
         self.rows = []
         self.cols = None
         if isinstance(src, str):
@@ -129,3 +131,45 @@ class DATA:
         if sortp and b.d2h(self) < a.d2h(self):
             a, b = b, a
         return a, b, a.dist(b, self), evals
+    
+    def clone(self, rows=None, new=None):
+        new = DATA([self.cols.names])
+        for row in (rows or []):
+            new.add(row)
+        return new
+
+    def many(self, t, n=None):
+        if n is None:
+            n = len(t)
+        return [random.choice(t) for _ in range(n)]
+    
+    def half(self,rows=None,sortp=None,before=None,evals=None):
+        some = self.many(rows, min(256,len(rows)))
+        a,b,C,evals = self.farApart(some, sortp, before)
+        def d(row1,row2):
+            return row1.dist(row2,self)
+        def project(r):
+            return ((d(r,a)**2 + C**2 - d(r,b)**2) / (2*C))
+        a_s,b_s = [],[]
+        for n,row in enumerate(keysort(rows,project), start=1):
+            if n <= len(rows) // 2:
+                a_s.append(row)
+            else:
+                b_s.append(row)
+        return a_s, b_s, a, b, C, d(a, b_s[0]), evals
+    
+    def branch(self,stop=None,rest=None,_branch=None,evals=None):
+        evals, rest = 1, []
+        if stop is None:
+            stop = 2*(len(self.rows)**0.5)
+        def _branch(data, above=None):
+            nonlocal evals, rest
+            if len(data.rows) > stop:
+                lefts, rights, left, _, _, _, _ = self.half(data.rows, True, above)
+                evals = evals+1
+                for row1 in rights:
+                    rest.append(row1)
+                return _branch(data.clone(lefts), left)
+            else:
+                return self.clone(data.rows), self.clone(rest), evals
+        return _branch(self)
