@@ -6,6 +6,9 @@ from sym import SYM
 import sys
 from config import *
 from collections import defaultdict
+from datetime import datetime
+import statistics
+from stats import SAMPLE, eg0
 
 class gate:
     def run(self, fileFlag, testFlag):
@@ -27,6 +30,8 @@ class gate:
         elif testFlag == "gate":
             self.run_specific_test(testFlag)
         elif testFlag == "print_stats":
+            self.run_specific_test(testFlag)
+        elif testFlag == "hw7_part2":
             self.run_specific_test(testFlag)
         else:
             self.run_specific_test(testFlag) 
@@ -97,6 +102,10 @@ class gate:
         print("-" * 29)
         print(f"Total | {total_rows} | 100.00%")
 
+    
+
+    
+    
 if __name__ == "__main__":
     t = settings(help_str)
     fileFlag, testFlag = None, None

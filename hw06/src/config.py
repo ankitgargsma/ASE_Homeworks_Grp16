@@ -24,5 +24,7 @@ help_str = __doc__
 
 the = {
         'k': 1, 
-        'm': 2
+        'm': 2,
+        'seed': 31210,
+        'file:': "./auto93.csv"
     }
