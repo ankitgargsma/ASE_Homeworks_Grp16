@@ -5,8 +5,11 @@ from test import Tests
 from sym import SYM
 import sys
 from config import *
+from range import Range
 from range import *
 from collections import defaultdict
+from rule import RULE
+from rules import RULES
 
 class gate:
     def run(self, fileFlag, testFlag):
@@ -125,7 +128,39 @@ class gate:
                  print("{:.2f}".format(round(score(v), 2)), v)
         
         print({"LIKE": len(LIKE), "HATE": len(HATE)})
+    
         '''
+
+def _ranges(cols, rowss):
+    t = []
+    for col in cols:
+        for range in ranges1(col, rowss):
+            t.append(range)
+    return t
+
+def o(t, n=None, u=None):
+    if isinstance(t, (int, float)):
+        return str(round(t, n))
+    if not isinstance(t, dict):
+        return str(t)
+
+    u = []
+    for k, v in t.items():
+        if str(k)[0] != "_":
+            if len(t) > 0:
+                u.append(o(v, n))
+            else:
+                u.append(f"%s: %s", o(k, n), o(v, n))
+
+    return "{" + ", ".join(u) + "}"
+
+def shuffle(t):
+    u = t.copy()
+    for i in range(len(u) - 1, 0, -1):
+        j = random.randint(0, i)
+        u[i], u[j] = u[j], u[i]
+    return u
+
 if __name__ == "__main__":
     t = settings(help_str)
     fileFlag, testFlag = None, None
@@ -143,3 +178,28 @@ if __name__ == "__main__":
     if fileFlag and testFlag:
         g = gate()
         g.run(fileFlag, testFlag)
+
+    
+    ##final hw
+    print("score    mid selected                                          rule")
+    print("-----   --------------------------------------------------     ------")
+
+    d = DATA("./auto93.csv")
+    tmp = shuffle(d.rows)
+    train = d.clone(tmp[:len(tmp) // 2])
+    test = d.clone(tmp[len(tmp) // 2:])
+    test.rows.sort(key=lambda row: row.d2h(d))
+    test.rows = shuffle(test.rows)
+    best0, rest, evals1 = train.branch(THE_CUT1)
+    best, _, evals2 = best0.branch(THE_CUT2)
+    LIKE = best.rows
+    HATE = slice(shuffle(rest.rows), 1, 3 * len(LIKE))
+    rowss = {'LIKE': LIKE, 'HATE': HATE}
+    test.rows = shuffle(test.rows)
+    random = test.clone(slice(test.rows, 1, int(evals1 + evals2 + THE_CUT2 - 1)))
+    random.rows.sort(key=lambda row: row.d2h(d))
+    for i, rule in enumerate(RULES(_ranges(train.cols.x, rowss), "LIKE", rowss).sorted):
+        result = train.clone(rule.selects(test.rows))
+        if len(result.rows) > 0:
+            result.rows.sort(key=lambda row: row.d2h(d))
+            print(round(rule.scored), "\t", o(result.mid().cells), "\t", rule.show())
