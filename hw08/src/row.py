@@ -1,6 +1,7 @@
 import math
 import utils
 from config import *
+from utils import *
 
 class ROW:
     def __init__(self, t):
@@ -50,12 +51,11 @@ class ROW:
         #return (d / n) ** (1 / p)
     
     def dist(self, other, data, d=0, n=0):
-        p = utils.THE_P
+        p = 2
         for col in data.cols.x:
             n += 1
             d += col.dist(self.cells[col.at], other.cells[col.at]) ** p
         return (d / n) ** (1 / p)
 
     def neighbors(self, data, rows=None):
-        rows = rows if rows else data.rows
-        return sorted(rows, key=lambda row: self.dist(row, data))
+        return keysort(rows or data.rows, lambda row: self.dist(row, data))

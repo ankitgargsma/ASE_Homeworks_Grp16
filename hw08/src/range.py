@@ -87,3 +87,10 @@ def _mergeds(ranges, too_few):
     t[0].x['lo'] = -math.inf
     t[-1].x['hi'] = math.inf
     return t 
+
+def _ranges(cols, rowss):
+        t = []
+        for col in cols:
+            for range in ranges1(col, rowss):
+                t.append(range)
+        return t
