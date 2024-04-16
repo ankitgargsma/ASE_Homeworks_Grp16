@@ -149,7 +149,7 @@ def main(file_path):
     # if data is not None:
     #     print("Data loaded successfully!")
     #     print(data.head())  # Print the first few rows to verify
-    metrics = KNN(data)
+    metrics = decision_tree(data)
     print(metrics)
 
 
