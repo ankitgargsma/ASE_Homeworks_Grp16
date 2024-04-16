@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 def read_data(file_path):
     """
@@ -41,7 +42,23 @@ def random_classifier(data):
     
     return predictions
 
-
+def evaluate_metrics(y_true, y_pred):
+    """
+    Calculate precision, recall, and F1 score.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - precision (float): Precision score.
+    - recall (float): Recall score.
+    - f1 (float): F1 score.
+    """
+    precision = precision_score(y_true, y_pred, pos_label=y_true.unique()[0])
+    recall = recall_score(y_true, y_pred, pos_label=y_true.unique()[0])
+    f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
+    return precision, recall, f1
 
 def main(file_path):
     # Read the data
@@ -58,17 +75,20 @@ def main(file_path):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
         
         # Perform random classification
-        y_pred_train = random_classifier(pd.concat([X_train, y_train], axis=1))
         y_pred_test = random_classifier(pd.concat([X_test, y_test], axis=1))
         
-        # Calculate accuracy
-        train_accuracy = accuracy_score(y_train, y_pred_train)
+        # Calculate accuracy for the test set
         test_accuracy = accuracy_score(y_test, y_pred_test)
         
-        print("Train Accuracy:", train_accuracy)
+        # Calculate evaluation metrics for the test set
+        test_precision, test_recall, test_f1 = evaluate_metrics(y_test, y_pred_test)
+        
+        # Print results
         print("Test Accuracy:", test_accuracy)
+        print("Test Precision:", test_precision)
+        print("Test Recall:", test_recall)
+        print("Test F1 Score:", test_f1)
 
-# Example usage:
 if __name__ == "__main__":
     file_path = "../../data/diabetes.csv"
     main(file_path)
