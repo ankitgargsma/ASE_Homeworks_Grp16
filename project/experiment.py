@@ -3,12 +3,13 @@ import os
 import pandas as pd
 
 # Import the main functions from each module
-from project.decision_tree.decision_tree import main_multiple as decision_tree_main_multiple
-from project.knn.knn import main_multiple as knn_main_multiple
-from project.random_classifier.random_classifier import main_multiple as random_classifier_main_multiple
-from project.random_forest.random_forest import main_multiple as random_forest_main_multiple
+from knn import main_multiple as knn_main_multiple
+from random_classifier import main_multiple as random_classifier_main_multiple
+from random_forest import main_multiple as random_forest_main_multiple
+from decision_tree import main_multiple as decision_tree_main_multiple
 
 # Define the main function to run all experiments
+# TODO RUN 20 ITERATIONS AND TAKE AVERAGES
 def run_experiments(file_path):
     """
     Run experiments for all models and store the data.

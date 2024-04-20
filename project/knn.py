@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt # data visualization
-import seaborn as sns # statistical data visualization
+#import seaborn as sns # statistical data visualization
 import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier

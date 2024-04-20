@@ -176,5 +176,5 @@ def main_multiple(file_dir):
                 print("="*50)
 
 if __name__ == "__main__":
-    file_path = "../../project_data/"
+    file_path = "../project_data/"
     main_multiple(file_path)
