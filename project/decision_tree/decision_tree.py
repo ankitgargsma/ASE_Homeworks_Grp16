@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import os
 
 warnings.filterwarnings('ignore')
 
@@ -42,6 +44,10 @@ def decision_tree(data):
     Returns:
     - dict: Dictionary containing the evaluation metrics.
     """
+    label_encoders = {}
+    for column in data.select_dtypes(include=['object']):
+        label_encoders[column] = LabelEncoder()
+        data[column] = label_encoders[column].fit_transform(data[column])
     # Split the data into features (X) and target variable (y)
     X = data.iloc[:, :-1]  # Features (all columns except the last one)
     y = data.iloc[:, -1]   # Target variable (last column)
@@ -152,7 +158,23 @@ def main(file_path):
     metrics = decision_tree(data)
     print(metrics)
 
+def main_multiple(file_dir):
+    """
+    Main function to load data from multiple files and print evaluation metrics.
+    
+    Args:
+    - file_dir (str): Directory containing the dataset files.
+    """
+    for file_name in os.listdir(file_dir):
+        if file_name.endswith('.csv'):
+            file_path = os.path.join(file_dir, file_name)
+            print(f"Processing file: {file_path}")
+            data = read_data(file_path)
+            if data is not None:
+                metrics = decision_tree(data)
+                print(metrics)
+                print("="*50)
 
 if __name__ == "__main__":
-    file_path = "../../data/diabetes.csv"
-    main(file_path)
+    file_path = "../../project_data/"
+    main_multiple(file_path)
