@@ -1,8 +1,11 @@
-import pandas as pd
+import os
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
+from scipy.stats import chi2_contingency
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import accuracy_score
 
 def read_data(file_path):
     """
@@ -20,7 +23,7 @@ def read_data(file_path):
     except Exception as e:
         print("Error occurred while reading the data:", e)
         return None
-
+    
 def random_classifier(data):
     """
     Randomly classify data.
@@ -60,6 +63,17 @@ def evaluate_metrics(y_true, y_pred):
     f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
     return precision, recall, f1
 
+def gini_impurity(y):
+    _, counts = np.unique(y, return_counts=True)
+    probabilities = counts / len(y)
+    gini = 1 - np.sum(probabilities**2)
+    return gini
+
+def statistical_significance(y_true, y_pred):
+    contingency_table = pd.crosstab(y_true, y_pred)
+    _, p, _, _ = chi2_contingency(contingency_table)
+    return p
+
 def main(file_path):
     # Read the data
     data = read_data(file_path)
@@ -83,12 +97,38 @@ def main(file_path):
         # Calculate evaluation metrics for the test set
         test_precision, test_recall, test_f1 = evaluate_metrics(y_test, y_pred_test)
         
-        # Print results
-        print("Test Accuracy:", test_accuracy)
-        print("Test Precision:", test_precision)
-        print("Test Recall:", test_recall)
-        print("Test F1 Score:", test_f1)
+        # Calculate gini impurity and statistical significance (p-value)
+        g_value = gini_impurity(y_test)
+        significance_value = statistical_significance(y_test, y_pred_test)
+        
+        # Return evaluation metrics
+        metrics = {
+            'precision': test_precision,
+            'recall': test_recall,
+            'f1': test_f1,
+            'g_value': g_value,
+            'Statistical significance (p-value)': significance_value,
+            'train_accuracy': None,  # No training accuracy for random classifier
+            'test_accuracy': test_accuracy
+        }
+        return metrics
+
+def main_multiple(file_dir):
+    """
+    Main function to load data from multiple files and print evaluation metrics.
+    
+    Args:
+    - file_dir (str): Directory containing the dataset files.
+    """
+    for file_name in os.listdir(file_dir):
+        if file_name.endswith('.csv'):
+            file_path = os.path.join(file_dir, file_name)
+            print(f"Processing file: {file_path}")
+            metrics = main(file_path)
+            if metrics is not None:
+                print(metrics)
+                print("="*50)
 
 if __name__ == "__main__":
-    file_path = "../../data/diabetes.csv"
-    main(file_path)
+    file_path = "../../project_data/"
+    main_multiple(file_path)
