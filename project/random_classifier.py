@@ -139,17 +139,37 @@ def main_multiple(file_dir):
     
     Args:
     - file_dir (str): Directory containing the dataset files.
+    
+    Returns:
+    - full_metrics (list): List of dictionaries containing metrics for the full dataset.
+    - smaller_metrics (list): List of dictionaries containing metrics for the smaller random chunk.
     """
+    full_metrics = []
+    smaller_metrics = []
+    
     for file_name in os.listdir(file_dir):
         if file_name.endswith('.csv'):
             file_path = os.path.join(file_dir, file_name)
             print(f"Processing file: {file_path}")
-            metrics = main(file_path)
-            if metrics is not None:
-                print(metrics)
-                print("="*50)
-            return metrics
+            
+            # Full dataset
+            full_metrics.append(main(file_path))
+            
+            # Random smaller chunk
+            data = read_data(file_path)
+            if data is not None:
+                smaller_data = data.sample(frac=0.15, random_state=42)
+                print("Processing smaller random chunk of the file...")
+                smaller_metrics.append(main(smaller_data))  # Pass smaller_data instead of file_path
+    
+    return full_metrics, smaller_metrics
 
 if __name__ == "__main__":
     file_path = "../project_data/"
-    main_multiple(file_path)
+    full_metrics, smaller_metrics = main_multiple(file_path)
+    print("Full Dataset Metrics:")
+    print(full_metrics)
+    print("="*50)
+    print("Smaller Random Chunk Metrics:")
+    print(smaller_metrics)
+

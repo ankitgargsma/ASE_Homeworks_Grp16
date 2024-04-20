@@ -1,19 +1,11 @@
+import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt # data visualization
-#import seaborn as sns # statistical data visualization
-import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, recall_score, precision_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from scipy.stats import chi2_contingency
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-import os
-
-warnings.filterwarnings('ignore')
 
 def read_data(file_path):
     """
@@ -32,11 +24,9 @@ def read_data(file_path):
         print("Error occurred while reading the data:", e)
         return None
     
-    
-    
 def KNN(data):
     """
-    Train and test a random forest classifier on the given dataset.
+    Train and test a KNN classifier on the given dataset.
     
     Args:
     - data (DataFrame): Pandas DataFrame containing the dataset.
@@ -44,8 +34,6 @@ def KNN(data):
     Returns:
     - dict: Dictionary containing the evaluation metrics.
     """
-    # Split the data into features (X) and target variable (y)
-    #X = X.select_dtypes(exclude=['object'])
     label_encoders = {}
     for column in data.select_dtypes(include=['object']):
         label_encoders[column] = LabelEncoder()
@@ -63,57 +51,58 @@ def KNN(data):
 
     # Train the KNN classifier
     knn = KNeighborsClassifier(n_neighbors=5)
-    #knn.fit(X_train, y_train)
-    knn.fit(X_train_scaled,y_train)
+    knn.fit(X_train_scaled, y_train)
 
     # Make predictions
-    #y_pred = knn.predict(X_test)
     y_pred = knn.predict(X_test_scaled)
 
-    # Calculate metrics
-    effect_size_value = effect_size(y_test, y_pred)
-    significance_value = statistical_significance(y_test, y_pred)
-    g_value = gini_impurity(y_test)
-    #recall_value = recall_score(y_test, y_pred, average='macro')
-    accuracy_value = accuracy_score(y_test, y_pred)
-    #precision_value = precision_score(y_test, y_pred, average='macro')
-    
     # Calculate evaluation metrics
     precision = precision_score(y_test, y_pred, pos_label=y.unique()[0])
     recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
     f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
-    
-    # Perform random classification
-    y_pred_train = knn_classifier(pd.concat([X_train, y_train], axis=1))
-    y_pred_test = knn_classifier(pd.concat([X_test, y_test], axis=1))
-        
-    # Calculate accuracy
-    train_accuracy = accuracy_score(y_train, y_pred_train)
-    test_accuracy = accuracy_score(y_test, y_pred_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    g_value = gini_impurity(y_test)
+    significance_value = statistical_significance(y_test, y_pred)
+    effect_size_value = effect_size(y_test, y_pred)
+
     # Return evaluation metrics
-    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value,  'effect size': effect_size_value, 'Statistical significance (p-value)': significance_value, 'test_accuracy': test_accuracy}
+    metrics = {
+        'precision': precision,
+        'recall': recall,
+        'f1': f1,
+        'g_value': g_value,
+        'effect size': effect_size_value,
+        'Statistical significance (p-value)': significance_value,
+        'test_accuracy': accuracy
+    }
     return metrics
 
-def knn_classifier(data):
+def KNN_small(data):
     """
-    Randomly classify data.
+    Train and test a KNN classifier on a smaller random chunk of the given dataset.
     
     Args:
-    - data (DataFrame): Pandas DataFrame containing the data.
+    - data (DataFrame): Pandas DataFrame containing the dataset.
     
     Returns:
-    - predictions (list): List of randomly generated class labels.
+    - dict: Dictionary containing the evaluation metrics for the smaller random chunk.
     """
-    # Get the name of the last column
-    last_column_name = data.columns[-1]
+    # Take a smaller random chunk of the data
+    smaller_data = data.sample(frac=0.15, random_state=42)
+    
+    # Call KNN function to evaluate metrics on the smaller chunk
+    return KNN(smaller_data)
 
-    # Get the class labels
-    class_labels = data[last_column_name].unique()
-    
-    # Generate random predictions
-    predictions = np.random.choice(class_labels, size=len(data))
-    
-    return predictions
+def gini_impurity(y):
+    _, counts = np.unique(y, return_counts=True)
+    probabilities = counts / len(y)
+    gini = 1 - np.sum(probabilities**2)
+    return gini
+
+def statistical_significance(y_true, y_pred):
+    contingency_table = pd.crosstab(y_true, y_pred)
+    _, p, _, _ = chi2_contingency(contingency_table)
+    return p
 
 def effect_size(y_true, y_pred):
     tp = sum((y_true == 1) & (y_pred == 1))
@@ -132,31 +121,23 @@ def effect_size(y_true, y_pred):
 
     return (p1 - p2) / p
 
-def statistical_significance(y_true, y_pred):
-    contingency_table = pd.crosstab(y_true, y_pred)
-    _, p, _, _ = chi2_contingency(contingency_table)
-    return p
-
-def gini_impurity(y):
-    _, counts = np.unique(y, return_counts=True)
-    probabilities = counts / len(y)
-    gini = 1 - np.sum(probabilities**2)
-    return gini
-
-
 def main(file_path):
     """
-    Main function to load data and print the first few rows.
+    Main function to load data and print evaluation metrics.
     
     Args:
     - file_path (str): Path to the CSV file.
     """
     data = read_data(file_path)
-    # if data is not None:
-    #     print("Data loaded successfully!")
-    #     print(data.head())  # Print the first few rows to verify
-    metrics = KNN(data)
-    print(metrics)
+    if data is not None:
+        print("Data loaded successfully!")
+        metrics_full = KNN(data)
+        print("Metrics for the full dataset:")
+        print(metrics_full)
+        print("=" * 50)
+        metrics_small = KNN_small(data)
+        print("Metrics for the smaller random chunk:")
+        print(metrics_small)
 
 def main_multiple(file_dir):
     """
@@ -164,17 +145,30 @@ def main_multiple(file_dir):
     
     Args:
     - file_dir (str): Directory containing the dataset files.
+    
+    Returns:
+    - full_metrics (list): List of dictionaries containing metrics for the full dataset.
+    - smaller_metrics (list): List of dictionaries containing metrics for the smaller random chunk.
     """
+    full_metrics = []
+    smaller_metrics = []
+    
     for file_name in os.listdir(file_dir):
         if file_name.endswith('.csv'):
             file_path = os.path.join(file_dir, file_name)
             print(f"Processing file: {file_path}")
+            
+            # Full dataset
+            full_metrics.append(main(file_path))
+            
+            # Random smaller chunk
             data = read_data(file_path)
             if data is not None:
-                metrics = KNN(data)
-                print(metrics)
-                print("="*50)
-                return metrics
+                smaller_data = data.sample(frac=0.15, random_state=42)
+                print("Processing smaller random chunk of the file...")
+                smaller_metrics.append(main(smaller_data))  # Pass smaller_data instead of file_path
+    
+    return full_metrics, smaller_metrics
 
 if __name__ == "__main__":
     file_path = "../project_data/"

@@ -27,14 +27,19 @@ def run_experiments(file_path, iterations=2):
         print(f"Iteration {_ + 1}/{iterations}")
         for model_name, model_function in model_functions.items():
             print(f"Running experiments for {model_name}...")
-            metrics = model_function(file_path)
-            if metrics is not None:
-                for metric, value in metrics.items():
+            full_metrics, smaller_metrics = model_function(file_path)
+            if full_metrics is not None:
+                for metric, value in full_metrics.items():
+                    if value is not None:
+                        model_metrics_sum[model_name][metric] += value
+                        
+            if smaller_metrics is not None:
+                for metric, value in smaller_metrics.items():
                     if value is not None:
                         model_metrics_sum[model_name][metric] += value
 
     # Calculate average metrics
-    model_metrics_avg = {model_name: {metric: total / iterations for metric, total in model_metrics.items()} for model_name, model_metrics in model_metrics_sum.items()}
+    model_metrics_avg = {model_name: {metric: total / (iterations * 2) for metric, total in model_metrics.items()} for model_name, model_metrics in model_metrics_sum.items()}
 
     # Print average metrics
     print("\nAverage Metrics:")

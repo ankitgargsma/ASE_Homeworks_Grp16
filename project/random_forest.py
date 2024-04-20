@@ -80,6 +80,26 @@ def random_forest(data):
     metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'effect size': effect_size_value, 'Statistical significance (p-value)': significance_value, 'test_accuracy': test_accuracy}
     return metrics
 
+def random_forest_small(data):
+    """
+    Train and test a random forest classifier on a smaller random chunk of the given dataset.
+    
+    Args:
+    - data (DataFrame): Pandas DataFrame containing the dataset.
+    
+    Returns:
+    - dict: Dictionary containing the evaluation metrics for the smaller random chunk.
+    """
+    if data is None:
+        return {}
+    
+    # Take a smaller random chunk of the data
+    smaller_data = data.sample(frac=0.15, random_state=42)
+    
+    # Call random_forest function to evaluate metrics on the smaller chunk
+    return random_forest(smaller_data)
+
+
 def gini_impurity(y):
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / len(y)
@@ -114,17 +134,32 @@ def main_multiple(file_dir):
     
     Args:
     - file_dir (str): Directory containing the dataset files.
+    
+    Returns:
+    - tuple: Tuple containing dictionaries of evaluation metrics for the full dataset and the smaller random chunk.
     """
+    full_metrics_list = []
+    smaller_metrics_list = []
+    
     for file_name in os.listdir(file_dir):
         if file_name.endswith('.csv'):
             file_path = os.path.join(file_dir, file_name)
             print(f"Processing file: {file_path}")
             data = read_data(file_path)
             if data is not None:
-                metrics = random_forest(data)
-                print(metrics)
+                full_metrics = random_forest(data)
+                print("Metrics for the full dataset:")
+                print(full_metrics)
+                full_metrics_list.append(full_metrics)
+                
+                smaller_metrics = random_forest_small(data)
+                print("Metrics for the smaller random chunk:")
+                print(smaller_metrics)
+                smaller_metrics_list.append(smaller_metrics)
+                
                 print("="*50)
-            return metrics
+    
+    return full_metrics_list, smaller_metrics_list
 
 if __name__ == "__main__":
     file_path = "../project_data/"
