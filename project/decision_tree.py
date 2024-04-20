@@ -91,7 +91,7 @@ def decision_tree(data):
     train_accuracy = accuracy_score(y_train, y_pred_train)
     test_accuracy = accuracy_score(y_test, y_pred_test)
     # Return evaluation metrics
-    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'Statistical significance (p-value)': significance_value, 'train_accuracy': train_accuracy, 'test_accuracy': train_accuracy}
+    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'effect size': effect_size_value, 'Statistical significance (p-value)': significance_value, 'test_accuracy': test_accuracy}
     return metrics
 
 def decisiontree_classifier(data):
@@ -174,6 +174,7 @@ def main_multiple(file_dir):
                 metrics = decision_tree(data)
                 print(metrics)
                 print("="*50)
+            return metrics
 
 if __name__ == "__main__":
     file_path = "../project_data/"

@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from scipy.stats import chi2_contingency
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import accuracy_score
+import pingouin as pg
 
 def read_data(file_path):
     """
@@ -74,6 +75,23 @@ def statistical_significance(y_true, y_pred):
     _, p, _, _ = chi2_contingency(contingency_table)
     return p
 
+def effect_size(y_true, y_pred):
+    tp = sum((y_true == 1) & (y_pred == 1))
+    fp = sum((y_true == 0) & (y_pred == 1))
+    tn = sum((y_true == 0) & (y_pred == 0))
+    fn = sum((y_true == 1) & (y_pred == 0))
+
+    n = len(y_true)
+
+    if (tp + fn) == 0 or (tp + fp) == 0 or n == 0:
+        return 0
+
+    p1 = (tp + fn) / n
+    p2 = (tp + fp) / n
+    p = (tp + fn) / n
+
+    return (p1 - p2) / p
+
 def main(file_path):
     # Read the data
     data = read_data(file_path)
@@ -100,6 +118,8 @@ def main(file_path):
         # Calculate gini impurity and statistical significance (p-value)
         g_value = gini_impurity(y_test)
         significance_value = statistical_significance(y_test, y_pred_test)
+        effect_size_value = effect_size(y_test, y_pred_test)
+
         
         # Return evaluation metrics
         metrics = {
@@ -107,8 +127,8 @@ def main(file_path):
             'recall': test_recall,
             'f1': test_f1,
             'g_value': g_value,
+            'effect size': effect_size_value, 
             'Statistical significance (p-value)': significance_value,
-            'train_accuracy': None,  # No training accuracy for random classifier
             'test_accuracy': test_accuracy
         }
         return metrics
@@ -128,7 +148,8 @@ def main_multiple(file_dir):
             if metrics is not None:
                 print(metrics)
                 print("="*50)
+            return metrics
 
 if __name__ == "__main__":
-    file_path = "../../project_data/"
+    file_path = "../project_data/"
     main_multiple(file_path)

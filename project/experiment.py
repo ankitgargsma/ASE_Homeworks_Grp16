@@ -1,58 +1,55 @@
-# Import necessary libraries
 import os
 import pandas as pd
 
-# Import the main functions from each module
 from knn import main_multiple as knn_main_multiple
 from random_classifier import main_multiple as random_classifier_main_multiple
 from random_forest import main_multiple as random_forest_main_multiple
 from decision_tree import main_multiple as decision_tree_main_multiple
 
-# Define the main function to run all experiments
-# TODO RUN 20 ITERATIONS AND TAKE AVERAGES
-def run_experiments(file_path):
+def run_experiments(file_path, iterations=2):
     """
-    Run experiments for all models and store the data.
+    Run experiments for all models, average the metrics over multiple iterations, and store the data.
     
     Args:
     - file_path (str): Directory containing the dataset files.
+    - iterations (int): Number of iterations to run for each model.
     """
-    print("Running experiments for Decision Tree...")
-    decision_tree_metrics = decision_tree_main_multiple(file_path)
-    save_metrics("Decision_Tree", decision_tree_metrics)
-    
-    print("Running experiments for KNN...")
-    knn_metrics = knn_main_multiple(file_path)
-    save_metrics("KNN", knn_metrics)
-    
-    print("Running experiments for Random Classifier...")
-    random_classifier_metrics = random_classifier_main_multiple(file_path)
-    save_metrics("Random_Classifier", random_classifier_metrics)
-    
-    print("Running experiments for Random Forest...")
-    random_forest_metrics = random_forest_main_multiple(file_path)
-    save_metrics("Random_Forest", random_forest_metrics)
+    model_functions = {
+        'Decision Tree': decision_tree_main_multiple,
+        'KNN': knn_main_multiple,
+        'Random Classifier': random_classifier_main_multiple,
+        'Random Forest': random_forest_main_multiple
+    }
 
-def save_metrics(model_name, metrics):
-    """
-    Save the evaluation metrics for a model to a CSV file.
-    
-    Args:
-    - model_name (str): Name of the model.
-    - metrics (dict): Dictionary containing the evaluation metrics.
-    """
-    if metrics is not None:
-        # Convert metrics to DataFrame
-        df = pd.DataFrame(metrics)
-        
-        # Create directory to store results if it doesn't exist
-        if not os.path.exists("results"):
-            os.makedirs("results")
-        
-        # Save metrics to CSV file
-        file_path = os.path.join("results", f"{model_name}_metrics.csv")
-        df.to_csv(file_path, index=False)
-        print(f"Metrics saved for {model_name} model.")
+    model_metrics_sum = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+
+    for _ in range(iterations):
+        print(f"Iteration {_ + 1}/{iterations}")
+        for model_name, model_function in model_functions.items():
+            print(f"Running experiments for {model_name}...")
+            metrics = model_function(file_path)
+            if metrics is not None:
+                for metric, value in metrics.items():
+                    if value is not None:
+                        model_metrics_sum[model_name][metric] += value
+
+    # Calculate average metrics
+    model_metrics_avg = {model_name: {metric: total / iterations for metric, total in model_metrics.items()} for model_name, model_metrics in model_metrics_sum.items()}
+
+    # Print average metrics
+    print("\nAverage Metrics:")
+    for model_name, metrics in model_metrics_avg.items():
+        print(f"\n{model_name}:")
+        for metric, value in metrics.items():
+            print(f"{metric}: {value}")
+
+    # Save metrics to CSV file
+    df = pd.DataFrame(model_metrics_avg)
+    if not os.path.exists("results"):
+        os.makedirs("results")
+    file_path = os.path.join("results", "average_metrics.csv")
+    df.to_csv(file_path, index=False)
+    print("\nAverage metrics saved.")
 
 # Main entry point
 if __name__ == "__main__":

@@ -64,6 +64,8 @@ def random_forest(data):
     # Calculate metrics
     g_value = gini_impurity(y_test)
     significance_value = statistical_significance(y_test, y_pred)
+    effect_size_value = effect_size(y_test, y_pred)
+
 
     # Calculate evaluation metrics
     precision = precision_score(y_test, y_pred, pos_label=y.unique()[0])
@@ -75,7 +77,7 @@ def random_forest(data):
     test_accuracy = accuracy_score(y_test, y_pred)
     
     # Return evaluation metrics
-    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'Statistical significance (p-value)': significance_value, 'train_accuracy': train_accuracy, 'test_accuracy': test_accuracy}
+    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'effect size': effect_size_value, 'Statistical significance (p-value)': significance_value, 'test_accuracy': test_accuracy}
     return metrics
 
 def gini_impurity(y):
@@ -88,6 +90,23 @@ def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)
     _, p, _, _ = chi2_contingency(contingency_table)
     return p
+
+def effect_size(y_true, y_pred):
+    tp = sum((y_true == 1) & (y_pred == 1))
+    fp = sum((y_true == 0) & (y_pred == 1))
+    tn = sum((y_true == 0) & (y_pred == 0))
+    fn = sum((y_true == 1) & (y_pred == 0))
+
+    n = len(y_true)
+
+    if (tp + fn) == 0 or (tp + fp) == 0 or n == 0:
+        return 0
+
+    p1 = (tp + fn) / n
+    p2 = (tp + fp) / n
+    p = (tp + fn) / n
+
+    return (p1 - p2) / p
 
 def main_multiple(file_dir):
     """
@@ -105,7 +124,8 @@ def main_multiple(file_dir):
                 metrics = random_forest(data)
                 print(metrics)
                 print("="*50)
+            return metrics
 
 if __name__ == "__main__":
-    file_path = "../../project_data/"
+    file_path = "../project_data/"
     main_multiple(file_path)
