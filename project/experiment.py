@@ -21,40 +21,64 @@ def run_experiments(file_path, iterations=2):
         'Random Forest': random_forest_main_multiple
     }
 
-    model_metrics_sum = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_sum_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_count_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    
+    model_metrics_sum_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_count_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
 
     for _ in range(iterations):
         print(f"Iteration {_ + 1}/{iterations}")
         for model_name, model_function in model_functions.items():
             print(f"Running experiments for {model_name}...")
-            full_metrics, smaller_metrics = model_function(file_path)
-            if full_metrics is not None:
-                for metric, value in full_metrics.items():
-                    if value is not None:
-                        model_metrics_sum[model_name][metric] += value
-                        
-            if smaller_metrics is not None:
-                for metric, value in smaller_metrics.items():
-                    if value is not None:
-                        model_metrics_sum[model_name][metric] += value
+            full_metrics_list, smaller_metrics_list = model_function(file_path)
+            for full_metrics, smaller_metrics in zip(full_metrics_list, smaller_metrics_list):
+                if full_metrics is not None:
+                    for metric, value in full_metrics.items():
+                        if value is not None:
+                            model_metrics_sum_full[model_name][metric] += value
+                            model_metrics_count_full[model_name][metric] += 1
+                if smaller_metrics is not None:
+                    for metric, value in smaller_metrics.items():
+                        if value is not None:
+                            model_metrics_sum_small[model_name][metric] += value
+                            model_metrics_count_small[model_name][metric] += 1
 
-    # Calculate average metrics
-    model_metrics_avg = {model_name: {metric: total / (iterations * 2) for metric, total in model_metrics.items()} for model_name, model_metrics in model_metrics_sum.items()}
+    # Calculate average metrics for full dataset
+    model_metrics_avg_full = {}
+    for model_name, model_metrics in model_metrics_sum_full.items():
+        model_metrics_avg_full[model_name] = {}
+        for metric, total in model_metrics.items():
+            count = model_metrics_count_full[model_name][metric]
+            if count != 0:
+                model_metrics_avg_full[model_name][metric] = total / count
+            else:
+                model_metrics_avg_full[model_name][metric] = 0
 
-    # Print average metrics
+    # Calculate average metrics for smaller random chunk
+    model_metrics_avg_small = {}
+    for model_name, model_metrics in model_metrics_sum_small.items():
+        model_metrics_avg_small[model_name] = {}
+        for metric, total in model_metrics.items():
+            count = model_metrics_count_small[model_name][metric]
+            if count != 0:
+                model_metrics_avg_small[model_name][metric] = total / count
+            else:
+                model_metrics_avg_small[model_name][metric] = 0
+
+    # Print and save metrics
     print("\nAverage Metrics:")
-    for model_name, metrics in model_metrics_avg.items():
+    for model_name in model_functions.keys():
         print(f"\n{model_name}:")
-        for metric, value in metrics.items():
+        # Print metrics for full dataset
+        print(f"{model_name} (Full data):")
+        for metric, value in model_metrics_avg_full[model_name].items():
             print(f"{metric}: {value}")
 
-    # Save metrics to CSV file
-    df = pd.DataFrame(model_metrics_avg)
-    if not os.path.exists("results"):
-        os.makedirs("results")
-    file_path = os.path.join("results", "average_metrics.csv")
-    df.to_csv(file_path, index=False)
-    print("\nAverage metrics saved.")
+        # Print metrics for smaller random chunk
+        print(f"\n{model_name} (Small data):")
+        for metric, value in model_metrics_avg_small[model_name].items():
+            print(f"{metric}: {value}")
 
 # Main entry point
 if __name__ == "__main__":

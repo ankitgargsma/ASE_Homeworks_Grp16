@@ -57,7 +57,7 @@ def KNN(data):
     y_pred = knn.predict(X_test_scaled)
 
     # Calculate evaluation metrics
-    precision = precision_score(y_test, y_pred, pos_label=y.unique()[0])
+    precision = precision_score(y_test, y_pred, pos_label=y_test.unique()[0], zero_division=1)
     recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
     f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
     accuracy = accuracy_score(y_test, y_pred)
@@ -105,28 +105,46 @@ def statistical_significance(y_true, y_pred):
     return p
 
 def effect_size(y_true, y_pred):
+    """
+    Compute Cohen's d as an effect size measure.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - float: Cohen's d effect size.
+    """
+    # Compute true positive rate (TPR) and false positive rate (FPR)
     tp = sum((y_true == 1) & (y_pred == 1))
     fp = sum((y_true == 0) & (y_pred == 1))
     tn = sum((y_true == 0) & (y_pred == 0))
     fn = sum((y_true == 1) & (y_pred == 0))
+    
+    # Check if there are positive instances in y_true
+    if (tp + fn) == 0:
+        return 0  # Return 0 if there are no positive instances
+    
+    # Calculate TPR (Sensitivity or Recall) and FPR (Fall-Out)
+    tpr = tp / (tp + fn)
+    fpr = fp / (fp + tn)
+    
+    # Compute Cohen's d
+    cohen_d = (tpr - fpr) / np.sqrt((tp + fn) * (fp + tn) / (tp + fp + tn + fn))
+    
+    return cohen_d
 
-    n = len(y_true)
-
-    if (tp + fn) == 0 or (tp + fp) == 0 or n == 0:
-        return 0
-
-    p1 = (tp + fn) / n
-    p2 = (tp + fp) / n
-    p = (tp + fn) / n
-
-    return (p1 - p2) / p
 
 def main(file_path):
     """
-    Main function to load data and print evaluation metrics.
+    Main function to load data and return evaluation metrics.
     
     Args:
     - file_path (str): Path to the CSV file.
+    
+    Returns:
+    - metrics_full (dict): Dictionary containing metrics for the full dataset.
+    - metrics_small (dict): Dictionary containing metrics for the smaller random chunk.
     """
     data = read_data(file_path)
     if data is not None:
@@ -138,6 +156,8 @@ def main(file_path):
         metrics_small = KNN_small(data)
         print("Metrics for the smaller random chunk:")
         print(metrics_small)
+        
+        return metrics_full, metrics_small  # Return the metrics instead of printing them
 
 def main_multiple(file_dir):
     """
@@ -159,16 +179,12 @@ def main_multiple(file_dir):
             print(f"Processing file: {file_path}")
             
             # Full dataset
-            full_metrics.append(main(file_path))
-            
-            # Random smaller chunk
-            data = read_data(file_path)
-            if data is not None:
-                smaller_data = data.sample(frac=0.15, random_state=42)
-                print("Processing smaller random chunk of the file...")
-                smaller_metrics.append(main(smaller_data))  # Pass smaller_data instead of file_path
+            metrics_full, metrics_small = main(file_path)  # Call main and get both metrics
+            full_metrics.append(metrics_full)  # Append metrics_full
+            smaller_metrics.append(metrics_small)  # Append metrics_small
     
     return full_metrics, smaller_metrics
+
 
 if __name__ == "__main__":
     file_path = "../project_data/"

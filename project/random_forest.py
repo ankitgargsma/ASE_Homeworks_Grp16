@@ -3,10 +3,11 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from scipy.stats import chi2_contingency
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
+
+
 
 def read_data(file_path):
     """
@@ -25,6 +26,34 @@ def read_data(file_path):
         print("Error occurred while reading the data:", e)
         return None
     
+def calculate_metrics(y_true, y_pred):
+    """
+    Calculate precision, recall, F1-score, and statistical significance.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - metrics (dict): Dictionary containing evaluation metrics.
+    """
+    precision = precision_score(y_true, y_pred, pos_label=y_true.unique()[0], zero_division=1)
+    recall = recall_score(y_true, y_pred, pos_label=y_true.unique()[0])
+    f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
+    g_value = gini_impurity(y_true)
+    significance_value = statistical_significance(y_true, y_pred)
+    effect_size_value = effect_size(y_true, y_pred)
+    
+    metrics = {
+        'precision': precision,
+        'recall': recall,
+        'f1': f1,
+        'g_value': g_value,
+        'effect size': effect_size_value,
+        'Statistical significance (p-value)': significance_value,
+    }
+    return metrics
+
 def random_forest(data):
     """
     Train and test a random forest classifier on the given dataset.
@@ -47,38 +76,24 @@ def random_forest(data):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
     
-    # Scale the features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
     # Initialize the Random Forest classifier
     clf = RandomForestClassifier(random_state=42)
 
     # Train the classifier
-    clf.fit(X_train_scaled, y_train)
+    clf.fit(X_train, y_train)
 
     # Make predictions
-    y_pred = clf.predict(X_test_scaled)
-
-    # Calculate metrics
-    g_value = gini_impurity(y_test)
-    significance_value = statistical_significance(y_test, y_pred)
-    effect_size_value = effect_size(y_test, y_pred)
-
+    y_pred = clf.predict(X_test)
 
     # Calculate evaluation metrics
-    precision = precision_score(y_test, y_pred, pos_label=y.unique()[0])
-    recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
-    f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
+    metrics = calculate_metrics(y_test, y_pred)
     
-    # Calculate accuracy
-    train_accuracy = accuracy_score(y_train, clf.predict(X_train_scaled))
-    test_accuracy = accuracy_score(y_test, y_pred)
+    # Calculate test accuracy separately and add it to the metrics dictionary
+    accuracy = accuracy_score(y_test, y_pred)
+    metrics['test_accuracy'] = accuracy
     
-    # Return evaluation metrics
-    metrics = {'precision': precision, 'recall': recall, 'f1': f1, 'g_value': g_value, 'effect size': effect_size_value, 'Statistical significance (p-value)': significance_value, 'test_accuracy': test_accuracy}
     return metrics
+
 
 def random_forest_small(data):
     """
@@ -100,6 +115,7 @@ def random_forest_small(data):
     return random_forest(smaller_data)
 
 
+
 def gini_impurity(y):
     _, counts = np.unique(y, return_counts=True)
     probabilities = counts / len(y)
@@ -112,21 +128,54 @@ def statistical_significance(y_true, y_pred):
     return p
 
 def effect_size(y_true, y_pred):
+    """
+    Compute Cohen's d as an effect size measure.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - float: Cohen's d effect size.
+    """
+    # Compute true positive rate (TPR) and false positive rate (FPR)
     tp = sum((y_true == 1) & (y_pred == 1))
     fp = sum((y_true == 0) & (y_pred == 1))
     tn = sum((y_true == 0) & (y_pred == 0))
     fn = sum((y_true == 1) & (y_pred == 0))
+    
+    # Check if there are positive instances in y_true
+    if (tp + fn) == 0:
+        return 0  # Return 0 if there are no positive instances
+    
+    # Calculate TPR (Sensitivity or Recall) and FPR (Fall-Out)
+    tpr = tp / (tp + fn)
+    fpr = fp / (fp + tn)
+    
+    # Compute Cohen's d
+    cohen_d = (tpr - fpr) / np.sqrt((tp + fn) * (fp + tn) / (tp + fp + tn + fn))
+    
+    return cohen_d
 
-    n = len(y_true)
 
-    if (tp + fn) == 0 or (tp + fp) == 0 or n == 0:
-        return 0
 
-    p1 = (tp + fn) / n
-    p2 = (tp + fp) / n
-    p = (tp + fn) / n
-
-    return (p1 - p2) / p
+def main(file_path):
+    """
+    Main function to load data and print evaluation metrics.
+    
+    Args:
+    - file_path (str): Path to the CSV file.
+    """
+    data = read_data(file_path)
+    if data is not None:
+        print("Data loaded successfully!")
+        metrics_full = random_forest(data)
+        print("Metrics for the full dataset:")
+        print(metrics_full)
+        print("=" * 50)
+        metrics_small = random_forest_small(data)
+        print("Metrics for the smaller random chunk:")
+        print(metrics_small)
 
 def main_multiple(file_dir):
     """
@@ -164,3 +213,4 @@ def main_multiple(file_dir):
 if __name__ == "__main__":
     file_path = "../project_data/"
     main_multiple(file_path)
+
