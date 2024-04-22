@@ -153,6 +153,8 @@ def main(file_path):
     """
     data = read_data(file_path)
     if data is not None:
+        data = drop_nan_values(data)
+
         print("Data loaded successfully!")
         metrics_full = KNN(data)
         print("Metrics for the full dataset:")
@@ -163,6 +165,21 @@ def main(file_path):
         print(metrics_small)
         
         return metrics_full, metrics_small  # Return the metrics instead of printing them
+
+def drop_nan_values(data):
+    """
+    Drop rows containing NaN values from the DataFrame.
+    
+    Args:
+    - data (DataFrame): Input DataFrame.
+    
+    Returns:
+    - DataFrame: DataFrame with NaN values dropped.
+    """
+    cleaned_data = data.dropna()
+    return cleaned_data
+
+
 
 def main_multiple(file_dir):
     """

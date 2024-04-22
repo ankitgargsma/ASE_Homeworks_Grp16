@@ -111,6 +111,18 @@ def effect_size(y_true, y_pred):
     
     return cohen_d
 
+def drop_nan_values(data):
+    """
+    Drop rows containing NaN values from the DataFrame.
+    
+    Args:
+    - data (DataFrame): Input DataFrame.
+    
+    Returns:
+    - DataFrame: DataFrame with NaN values dropped.
+    """
+    cleaned_data = data.dropna()
+    return cleaned_data
 
 
 def main(data):
@@ -170,6 +182,7 @@ def main_multiple(file_dir):
 
             
             data = read_data(file_path)
+            data = drop_nan_values(data)
 
             # Full dataset
             full_metrics.append(main(data))
