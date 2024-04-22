@@ -68,7 +68,7 @@ def decision_tree(data):
     y = data.iloc[:, -1]   # Target variable (last column)
     
     # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
     
     # Scale the features
     scaler = StandardScaler()
@@ -116,7 +116,7 @@ def decision_tree_small(data):
     - dict: Dictionary containing the evaluation metrics for the smaller random chunk.
     """
     # Take a smaller random chunk of the data
-    smaller_data = data.sample(frac=0.15, random_state=42)
+    smaller_data = data.sample(frac=0.15)
     
     # Call decision_tree function to evaluate metrics on the smaller chunk
     return decision_tree(smaller_data)

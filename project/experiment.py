@@ -6,7 +6,7 @@ from random_classifier import main_multiple as random_classifier_main_multiple
 from random_forest import main_multiple as random_forest_main_multiple
 from decision_tree import main_multiple as decision_tree_main_multiple
 
-def run_experiments(file_path, iterations=2):
+def run_experiments(file_path, iterations=20):
     """
     Run experiments for all models, average the metrics over multiple iterations, and store the data.
     

@@ -207,8 +207,8 @@ def main_multiple(file_dir):
             
             # Random smaller chunk
             if data is not None:
-                smaller_data = data.sample(frac=0.15, random_state=42)
-                print("Processing smaller random chunk of the file...")
+                smaller_data = data.sample(frac=0.15)
+                #print("Processing smaller random chunk of the file...")
                 smaller_metrics.append(main(smaller_data))
     
     return full_metrics, smaller_metrics

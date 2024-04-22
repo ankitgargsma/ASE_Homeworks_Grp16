@@ -98,10 +98,10 @@ def random_forest(data):
     y = data.iloc[:, -1]   # Target variable (last column)
     
     # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
     
     # Initialize the Random Forest classifier
-    clf = RandomForestClassifier(random_state=42)
+    clf = RandomForestClassifier()
 
     # Train the classifier
     clf.fit(X_train, y_train)
@@ -133,7 +133,7 @@ def random_forest_small(data):
         return {}
     
     # Take a smaller random chunk of the data
-    smaller_data = data.sample(frac=0.15, random_state=42)
+    smaller_data = data.sample(frac=0.15)
     
     # Call random_forest function to evaluate metrics on the smaller chunk
     return random_forest(smaller_data)

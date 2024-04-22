@@ -42,7 +42,7 @@ def KNN(data):
     y = data.iloc[:, -1]   # Target variable (last column)
     
     # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
     
     # Scale the features
     scaler = StandardScaler()
@@ -88,7 +88,7 @@ def KNN_small(data):
     - dict: Dictionary containing the evaluation metrics for the smaller random chunk.
     """
     # Take a smaller random chunk of the data
-    smaller_data = data.sample(frac=0.15, random_state=42)
+    smaller_data = data.sample(frac=0.15)
     
     # Call KNN function to evaluate metrics on the smaller chunk
     return KNN(smaller_data)
@@ -182,7 +182,7 @@ def main(file_path):
         print("Metrics for the smaller random chunk:")
         print(metrics_small)
         
-        return metrics_full, metrics_small  # Return the metrics instead of printing them
+        return metrics_full, metrics_small 
 
 def drop_nan_values(data):
     """
