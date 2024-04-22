@@ -40,7 +40,7 @@ def calculate_metrics(y_true, y_pred):
     precision = precision_score(y_true, y_pred, pos_label=y_true.unique()[0], zero_division=1)
     recall = recall_score(y_true, y_pred, pos_label=y_true.unique()[0])
     f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
-    g_value = gini_impurity(y_true)
+    g_value = 2 * (precision * recall) / (precision + recall)
     significance_value = statistical_significance(y_true, y_pred)
     effect_size_value = effect_size(y_true, y_pred)
     
@@ -114,13 +114,6 @@ def random_forest_small(data):
     # Call random_forest function to evaluate metrics on the smaller chunk
     return random_forest(smaller_data)
 
-
-
-def gini_impurity(y):
-    _, counts = np.unique(y, return_counts=True)
-    probabilities = counts / len(y)
-    gini = 1 - np.sum(probabilities**2)
-    return gini
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)

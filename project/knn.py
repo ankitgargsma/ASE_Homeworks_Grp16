@@ -61,7 +61,7 @@ def KNN(data):
     recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
     f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
     accuracy = accuracy_score(y_test, y_pred)
-    g_value = gini_impurity(y_test)
+    g_value = 2 * (precision * recall) / (precision + recall)
     significance_value = statistical_significance(y_test, y_pred)
     effect_size_value = effect_size(y_test, y_pred)
 
@@ -92,12 +92,6 @@ def KNN_small(data):
     
     # Call KNN function to evaluate metrics on the smaller chunk
     return KNN(smaller_data)
-
-def gini_impurity(y):
-    _, counts = np.unique(y, return_counts=True)
-    probabilities = counts / len(y)
-    gini = 1 - np.sum(probabilities**2)
-    return gini
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)

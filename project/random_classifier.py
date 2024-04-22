@@ -66,11 +66,6 @@ def evaluate_metrics(y_true, y_pred):
     f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
     return precision, recall, f1
 
-def gini_impurity(y):
-    _, counts = np.unique(y, return_counts=True)
-    probabilities = counts / len(y)
-    gini = 1 - np.sum(probabilities**2)
-    return gini
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)
@@ -142,7 +137,7 @@ def main(data):
     # Calculate evaluation metrics
     test_accuracy = accuracy_score(y_true, y_pred)
     test_precision, test_recall, test_f1 = evaluate_metrics(y_true, y_pred)
-    g_value = gini_impurity(y_true)
+    g_value = 2 * (test_precision * test_recall) / (test_precision + test_recall)
     significance_value = statistical_significance(y_true, y_pred)
     effect_size_value = effect_size(y_true, y_pred)
 

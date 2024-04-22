@@ -64,7 +64,7 @@ def decision_tree(data):
     recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
     f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
     accuracy = accuracy_score(y_test, y_pred)
-    g_value = gini_impurity(y_test)
+    g_value = 2 * (precision * recall) / (precision + recall)
     significance_value = statistical_significance(y_test, y_pred)
     effect_size_value = effect_size(y_test, y_pred)
 
@@ -96,11 +96,6 @@ def decision_tree_small(data):
     # Call decision_tree function to evaluate metrics on the smaller chunk
     return decision_tree(smaller_data)
 
-def gini_impurity(y):
-    _, counts = np.unique(y, return_counts=True)
-    probabilities = counts / len(y)
-    gini = 1 - np.sum(probabilities**2)
-    return gini
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)
@@ -156,6 +151,7 @@ def main(file_path):
     """
     data = read_data(file_path)
     if data is not None:
+        data = drop_nan_values(data)
         print("Data loaded successfully!")
         metrics_full = decision_tree(data)
         print("Metrics for the full dataset:")
@@ -166,6 +162,19 @@ def main(file_path):
         print(metrics_small)
         
         return metrics_full, metrics_small  # Return the metrics instead of printing them
+
+def drop_nan_values(data):
+    """
+    Drop rows containing NaN values from the DataFrame.
+    
+    Args:
+    - data (DataFrame): Input DataFrame.
+    
+    Returns:
+    - DataFrame: DataFrame with NaN values dropped.
+    """
+    cleaned_data = data.dropna()
+    return cleaned_data
 
 
 def main_multiple(file_dir):
