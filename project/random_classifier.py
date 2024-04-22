@@ -98,6 +98,10 @@ def effect_size(y_true, y_pred):
     if (tp + fn) == 0:
         return 0  # Return 0 if there are no positive instances
     
+    # Check if fp + tn is not zero to avoid division by zero
+    if (fp + tn) == 0:
+        return 0  # Return 0 if fp + tn is zero
+    
     # Calculate TPR (Sensitivity or Recall) and FPR (Fall-Out)
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
@@ -106,6 +110,7 @@ def effect_size(y_true, y_pred):
     cohen_d = (tpr - fpr) / np.sqrt((tp + fn) * (fp + tn) / (tp + fp + tn + fn))
     
     return cohen_d
+
 
 
 def main(data):
