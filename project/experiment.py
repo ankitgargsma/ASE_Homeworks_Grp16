@@ -21,12 +21,13 @@ def run_experiments(file_path, iterations=2):
         'Random Forest': random_forest_main_multiple
     }
 
-    model_metrics_sum_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
-    model_metrics_count_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_sum_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'fmi', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_count_full = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'fmi', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
     
-    model_metrics_sum_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
-    model_metrics_count_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'g_value', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_sum_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'fmi', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
+    model_metrics_count_small = {model_name: {metric: 0 for metric in ['precision', 'recall', 'f1', 'fmi', 'effect size', 'Statistical significance (p-value)', 'test_accuracy']} for model_name in model_functions.keys()}
 
+   
     for _ in range(iterations):
         print(f"Iteration {_ + 1}/{iterations}")
         for model_name, model_function in model_functions.items():

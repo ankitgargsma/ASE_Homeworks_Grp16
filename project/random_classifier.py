@@ -66,6 +66,29 @@ def evaluate_metrics(y_true, y_pred):
     f1 = f1_score(y_true, y_pred, pos_label=y_true.unique()[0])
     return precision, recall, f1
 
+def fowlkes_mallows_index(y_true, y_pred):
+    """
+    Compute the Fowlkes-Mallows index.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - float: Fowlkes-Mallows index.
+    """
+    tp = sum((y_true == 1) & (y_pred == 1))
+    fp = sum((y_true == 0) & (y_pred == 1))
+    fn = sum((y_true == 1) & (y_pred == 0))
+    
+    if tp == 0:
+        return 0
+    
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    
+    fmi = np.sqrt(precision * recall)
+    return fmi
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)
@@ -137,7 +160,7 @@ def main(data):
     # Calculate evaluation metrics
     test_accuracy = accuracy_score(y_true, y_pred)
     test_precision, test_recall, test_f1 = evaluate_metrics(y_true, y_pred)
-    g_value = 2 * (test_precision * test_recall) / (test_precision + test_recall)
+    fmi = fowlkes_mallows_index(y_true, y_pred)
     significance_value = statistical_significance(y_true, y_pred)
     effect_size_value = effect_size(y_true, y_pred)
 
@@ -146,7 +169,7 @@ def main(data):
         'precision': test_precision,
         'recall': test_recall,
         'f1': test_f1,
-        'g_value': g_value,
+        'fmi': fmi,
         'effect size': effect_size_value, 
         'Statistical significance (p-value)': significance_value,
         'test_accuracy': test_accuracy

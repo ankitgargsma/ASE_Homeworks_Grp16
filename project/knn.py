@@ -61,7 +61,7 @@ def KNN(data):
     recall = recall_score(y_test, y_pred, pos_label=y.unique()[0])
     f1 = f1_score(y_test, y_pred, pos_label=y.unique()[0])
     accuracy = accuracy_score(y_test, y_pred)
-    g_value = 2 * (precision * recall) / (precision + recall)
+    fmi = fowlkes_mallows_index(y_test, y_pred)
     significance_value = statistical_significance(y_test, y_pred)
     effect_size_value = effect_size(y_test, y_pred)
 
@@ -70,7 +70,7 @@ def KNN(data):
         'precision': precision,
         'recall': recall,
         'f1': f1,
-        'g_value': g_value,
+        'fmi': fmi,
         'effect size': effect_size_value,
         'Statistical significance (p-value)': significance_value,
         'test_accuracy': accuracy
@@ -92,6 +92,30 @@ def KNN_small(data):
     
     # Call KNN function to evaluate metrics on the smaller chunk
     return KNN(smaller_data)
+
+def fowlkes_mallows_index(y_true, y_pred):
+    """
+    Compute the Fowlkes-Mallows index.
+    
+    Args:
+    - y_true (array-like): True class labels.
+    - y_pred (array-like): Predicted class labels.
+    
+    Returns:
+    - float: Fowlkes-Mallows index.
+    """
+    tp = sum((y_true == 1) & (y_pred == 1))
+    fp = sum((y_true == 0) & (y_pred == 1))
+    fn = sum((y_true == 1) & (y_pred == 0))
+    
+    if tp == 0:
+        return 0
+    
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    
+    fmi = np.sqrt(precision * recall)
+    return fmi
 
 def statistical_significance(y_true, y_pred):
     contingency_table = pd.crosstab(y_true, y_pred)
